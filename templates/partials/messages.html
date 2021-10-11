@@ -1,0 +1,22 @@
+{% if messages %}
+    {% for msg in messages  %}
+        <div {% if msg.tags %} class="alert alert-{{ msg.tags }} alert-dismissible fade show" {% endif %}>
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                <span aria-hidden="true"><b  style="font-size: 24px;">&times;</b></span>
+            </button>
+            <h5>
+                {% if msg.tags == 'success' %}
+                    <i class="icon fas fa-check"></i>
+                {% elif msg.tags == 'danger' %}
+                    <i class="icon fas fa-ban"></i>
+                {% elif msg.tags == 'warning' %}
+                    <i class="icon fas fa-exclamation-triangle"></i>
+                {% elif msg.tags == 'info' %}
+                    <i class="icon fas fa-info"></i>
+                {% endif %}
+                {{ msg.tags }}!
+            </h5>
+            {{ msg }}
+        </div>
+    {% endfor %}
+{% endif %}
