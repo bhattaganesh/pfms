@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="{% static 'plugins/overlayScrollbars/css/OverlayScrollbars.min.css' %}">
   <!-- Theme style -->
   <link rel="stylesheet" href="{% static 'css/adminlte.min.css' %}">
+  <link rel="stylesheet" href="{% static 'plugins/select2/dist/css/select2.min.css' %}">
   <style>
 /* Works on Firefox */
 * {
@@ -115,6 +116,8 @@
 <script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 
 <script src="{% static 'plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js' %}"></script>
+<script src="{% static 'plugins/select2/dist/js/select2.min.js' %}"></script>
+
 <!-- AdminLTE App -->
 <script src="{% static 'js/adminlte.min.js' %}"></script>
 <script>
@@ -123,6 +126,11 @@
       $(".alert-dismissible").hide();
     }, 3000);
   });
+
+// In your Javascript (external .js resource or <script> tag)
+  $(document).ready(function() {
+    $('.select2').select2();
+});
 </script>
 {% block site_js %}
   

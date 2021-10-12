@@ -10,7 +10,7 @@ urlpatterns = [
     path('sign-out/',views.signOut, name='signout'),
     path(
         'change-password/',auth_views.PasswordChangeView.as_view(
-            template_name='change-password.html',
+            template_name='dashboard/change-password.html',
             success_url='/'
         ),name='change_password'),
 

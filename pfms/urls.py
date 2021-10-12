@@ -25,5 +25,8 @@ urlpatterns = [
     path('', RedirectView.as_view(url = 'sign-in/')),
 
     path('expenses/', include('expense.urls')),
+    path('', include('currency.urls')),
     path('', include('authentication.urls')),
 ]
+
+handler404 = "pfms.views.page_not_found_view"

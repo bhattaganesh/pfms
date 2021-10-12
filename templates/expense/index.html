@@ -1,7 +1,15 @@
-{% extends 'dashboard.html' %}
+{% extends 'dashboard/dashboard.html' %}
 {% block title %}
   Expenses
 {% endblock %}
+
+
+{% block site_css %}
+  .table-responsive {
+    display: table;
+  }
+{% endblock %}
+  
 
 {% block content-header1 %}
   Expenses
@@ -12,5 +20,65 @@
 {% endblock  %}
 
 {% block content %}
-  <h1>Expenses</h1>
+ <div class="col-sm-12 col-md-12 mx-auto">
+  <div class="card card-primary">
+    <div class="card-header">
+      <h3 class="card-title">All Expenses</h3>
+      <div class="card-tools">
+        <a href="{% url 'add-expense' %}" class="btn btn-tool"  title="Add New Expense">
+          <i class="fas fa-plus fa-lg"></i> 
+        </a>
+      </div>
+    </div>
+    <div class="card-body p-0 table-responsive">
+      <table class="table table-striped   text-center  table-hover">
+          <thead>
+              <tr>
+                  <th>
+                      S.N.
+                  </th>
+                  <th>
+                      Amount
+                  </th>
+                  <th>
+                      Category
+                  </th>
+                  <th>
+                      Description
+                  </th>
+                  <th>
+                      Expense Date
+                  </th>
+                  <th>
+                    Entry Date
+                </th>
+                  <th>
+                    Action
+                  </th>
+              </tr>
+          </thead>
+          <tbody>
+              
+              {% for expense in expenses %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ expense.amount }}</td>
+                <td>{{ expense.expense_category }}</td>
+                <td>{{ expense.description|truncatewords:5 }}</td>
+                <td>{{ expense.expense_date }}</td>
+                <td>{{ expense.entry_date }}</td>
+                <td>
+                  <a href="" title="View this Expense" class="mr-2 btn btn-primary"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                  <a href="{% url 'edit-expense' expense.id %}" title="Edit this Expense" class="mr-2 btn btn-success"><i class="fa fa-edit" aria-hidden="true"></i></a>
+                  <a href="" title="Delete this Expense" class="  btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                </td>
+            </tr>
+              {% endfor %}
+                
+          </tbody>
+      </table>
+    </div>
+    <!-- /.card-body -->
+  </div>
+ </div>
 {% endblock %}

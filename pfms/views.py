@@ -15,5 +15,7 @@ def index(request):
     # else:
     #     password_form = PasswordChangeForm(instance = request.user)
     # return render(request, 'registration/password_change_form.html', {'password_form': password_form})
-    return render(request, 'dashboard.html')
+    return render(request, 'dashboard/dashboard.html')
 
+def page_not_found_view(request, exception):
+    return render(request, '404.html', status=404)

@@ -1,16 +1,39 @@
-{% extends 'dashboard.html' %}
+{% extends 'dashboard/dashboard.html' %}
 {% block title %}
-  Add Expense
+  Expense Add
 {% endblock %}
 
 {% block content-header1 %}
-  Add Expense
+  Expense Add
 {% endblock  %}
 
 {% block content-header2 %}
-  Add Expense
+  Expense Add
 {% endblock  %}
 
 {% block content %}
-  <h1>Add Expense</h1>
+  <div class="col-sm-10 col-md-8 mx-auto">
+    <div class="card card-primary">
+      <div class="card-header">
+        <h3 class="card-title">Expense Add Form</h3>
+  
+        <div class="card-tools">
+          <a href="{% url 'expenses' %}" class="btn btn-tool"  title="List All Expenses">
+            <i class="fas fa-eye fa-lg"></i>
+          </a>
+        </div>
+      </div>
+      <div class="card-body">
+        <form action="" method="post">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <div class="form-group">
+            <input type="reset" value="Cancel" class="btn btn-danger float-left">
+            <input type="submit" value="Add Expense" class="btn btn-success float-right">
+          </div>
+        </form>
+      </div>
+      <!-- /.card-body -->
+    </div>
+  </div>
 {% endblock %}

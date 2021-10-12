@@ -34,14 +34,30 @@
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <li class="nav-item">
-            <a href="#" class="nav-link {% if request.path == '/dashboard/' %} active {% endif %}">
+            <a href="{% url 'dashboard' %}" class="nav-link {% if request.path == '/dashboard/' %} active {% endif %}">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               Dashboard
             </a>
           </li>
           <li class="nav-item">
-            <a href="#" class="nav-link">
+            <a href="{% url 'expenses' %}" class="nav-link">
               <i class="nav-icon fas fa-th"></i>
+              <p>
+                Expense Categories
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'expenses' %}" class="nav-link">
+              <i class="nav-icon fas fa-th-large"></i>
+              <p>
+                Income Categories
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'expenses' %}" class="nav-link">
+              <i class="nav-icon fas fa-money-bill-wave-alt"></i>
               <p>
                 Expenses
               </p>
@@ -49,7 +65,7 @@
           </li>
           <li class="nav-item">
             <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
+              <i class="nav-icon fas fa-hand-holding-usd"></i>
               <p>
                 Incomes
                 <span class="right badge badge-danger">New</span>
@@ -59,7 +75,7 @@
           <li class="nav-header">Summary</li>
           <li class="nav-item">
             <a href="pages/calendar.html" class="nav-link">
-              <i class="nav-icon fas fa-calendar-alt"></i>
+              <i class="nav-icon fas fa-balance-scale-right"></i>
               <p>
                 Expense Summary
                 <span class="badge badge-info right">2</span>
@@ -68,7 +84,7 @@
           </li>
           <li class="nav-item">
             <a href="pages/gallery.html" class="nav-link">
-              <i class="nav-icon far fa-image"></i>
+              <i class="nav-icon fas fa-balance-scale-left"></i>
               <p>
                 Income Summary
               </p>
@@ -90,6 +106,16 @@
                 </a>
               </li>
             </ul>
+          </li>
+
+          <li class="nav-header">MISCELLANEOUS</li>
+          <li class="nav-item">
+            <a href="{% url 'currency' %}" class="nav-link">
+              <i class="nav-icon fas fa-coins"></i>
+              <p> Choose Currency</p>
+            </a>
+          </li>
+
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

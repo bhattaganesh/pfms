@@ -52,7 +52,7 @@ class RegistrationView(View):
             messages.error(request,'Confirmation password does not match with password.')
             return render(request, 'auth/register.html', context)
 
-        user = User.objects.create(name=name, email=email)
+        user = User.objects.create_user(name=name, email=email)
         user.set_password(password)
         user.save()
         messages.success(request, 'Account created successfully.')
