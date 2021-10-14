@@ -1,24 +1,24 @@
 {% extends 'dashboard/dashboard.html' %}
 {% block title %}
-  Expense Details
+  Income Details
 {% endblock %}
 
 {% block content-header1 %}
-  Expense Details
+  Income Details
 {% endblock  %}
 
 {% block content-header2 %}
-  Expense Details
+  Income Details
 {% endblock  %}
 
 {% block content %}
   <div class="col-sm-10 col-md-8 mx-auto">
     <div class="card card-primary">
       <div class="card-header">
-        <h3 class="card-title">Expense Details</h3>
+        <h3 class="card-title">Income Details</h3>
   
         <div class="card-tools">
-          <a href="{% url 'expenses' %}" class="btn btn-tool btn-primary"  title="Back to list">
+          <a href="{% url 'incomes' %}" class="btn btn-tool btn-primary"  title="Back to list">
             <i class="mr-1 fas fa-arrow-left"></i>
             <span>Back to List</span>
           </a>
@@ -32,15 +32,15 @@
                         ID
                     </th>
                     <td>
-                        {{ expense.id }}
+                        {{ income.id }}
                     </td>
                 </tr>
                 <tr>
                     <th>
-                        Expense Category
+                        Income Category
                     </th>
                     <td>
-                        {{ expense.expense_category }}
+                        {{ income.income_category }}
                     </td>
                 </tr>
                 <tr>
@@ -48,15 +48,15 @@
                         Entry Date
                     </th>
                     <td>
-                        {{ expense.entry_date }}
+                        {{ income.entry_date }}
                     </td>
                 </tr>
                 <tr>
                     <th>
-                        Expense Date
+                        Income Date
                     </th>
                     <td>
-                        {{ expense.expense_date }}
+                        {{ income.income_date }}
                     </td>
                 </tr>
                 <tr>
@@ -64,7 +64,7 @@
                         Amount
                     </th>
                     <td>
-                        {{ expense.amount }}
+                        {{ income.amount }}
                     </td>
                 </tr>
                 <tr>
@@ -72,7 +72,7 @@
                         Description
                     </th>
                     <td>
-                        {{ expense.description }}
+                        {{ income.description }}
                     </td>
                 </tr>
             </tbody>

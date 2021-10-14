@@ -133,19 +133,19 @@ class LoginView(View):
 
         if len(email) <= 0:
             messages.error(request,'Email should not be empty.')
-            return render(request, 'auth/register.html', context)
+            return render(request, 'auth/login.html', context)
 
         if not validate_email(email):
             messages.error(request,'Email should be valid email.')
-            return render(request, 'auth/register.html', context)
+            return render(request, 'auth/login.html', context)
 
         if len(password) <= 0:
             messages.error(request,'Password should not be empty.')
-            return render(request, 'auth/register.html', context)
+            return render(request, 'auth/login.html', context)
 
         if len(password) < 8:
             messages.error(request,'Password should have atleast length 8.')
-            return render(request, 'auth/register.html', context)
+            return render(request, 'auth/login.html', context)
 
         user = auth.authenticate(email=email, password=password)
         if user:

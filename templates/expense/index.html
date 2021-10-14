@@ -25,8 +25,9 @@
     <div class="card-header">
       <h3 class="card-title">All Expenses</h3>
       <div class="card-tools">
-        <a href="{% url 'add-expense' %}" class="btn btn-tool"  title="Add New Expense">
-          <i class="fas fa-plus fa-lg"></i> 
+        <a href="{% url 'add-expense' %}" class="btn btn-tool btn-primary"  title="Add New Expense">
+          <i class="fas fa-plus mr-1"></i> 
+          <span class="text-md">Add New Expense</span>
         </a>
       </div>
     </div>
@@ -38,7 +39,7 @@
                       S.N.
                   </th>
                   <th>
-                      Amount
+                      Amount ({{ currency }})
                   </th>
                   <th>
                       Category
@@ -64,13 +65,14 @@
                 <td>{{ forloop.counter }}</td>
                 <td>{{ expense.amount }}</td>
                 <td>{{ expense.expense_category }}</td>
-                <td>{{ expense.description|truncatewords:5 }}</td>
+                <td>{{ expense.description|truncatechars:40 }}</td>
                 <td>{{ expense.expense_date }}</td>
                 <td>{{ expense.entry_date }}</td>
                 <td>
-                  <a href="" title="View this Expense" class="mr-2 btn btn-primary"><i class="fa fa-eye" aria-hidden="true"></i></a>
-                  <a href="{% url 'edit-expense' expense.id %}" title="Edit this Expense" class="mr-2 btn btn-success"><i class="fa fa-edit" aria-hidden="true"></i></a>
-                  <a href="" title="Delete this Expense" class="  btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                  <a href="{% url 'view-expense' expense.id %}" title="View this Expense" class="mr-2 btn btn-sm btn-primary"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                  <a href="{% url 'edit-expense' expense.id %}" title="Edit this Expense" class="mr-2 btn btn-sm btn-success"><i class="fa fa-edit" aria-hidden="true"></i></a>
+                  <a href="javascript:;" title="Delete this Expense" class="  btn btn-sm btn-danger delete-btn"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                  <form action="{% url 'delete-expense' expense.id %}" method="post">{% csrf_token %}</form>
                 </td>
             </tr>
               {% endfor %}

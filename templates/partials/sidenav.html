@@ -36,11 +36,13 @@
           <li class="nav-item">
             <a href="{% url 'dashboard' %}" class="nav-link {% if request.path == '/dashboard/' %} active {% endif %}">
               <i class="nav-icon fas fa-tachometer-alt"></i>
-              Dashboard
+              <p>
+                Dashboard
+              </p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="{% url 'expenses' %}" class="nav-link">
+            <a href="{% url 'expense-categories' %}" class="nav-link">
               <i class="nav-icon fas fa-th"></i>
               <p>
                 Expense Categories
@@ -48,7 +50,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="{% url 'expenses' %}" class="nav-link">
+            <a href="{% url 'income-categories' %}" class="nav-link">
               <i class="nav-icon fas fa-th-large"></i>
               <p>
                 Income Categories
@@ -64,11 +66,10 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="#" class="nav-link">
+            <a href="{% url 'incomes' %}" class="nav-link">
               <i class="nav-icon fas fa-hand-holding-usd"></i>
               <p>
                 Incomes
-                <span class="right badge badge-danger">New</span>
               </p>
             </a>
           </li>
@@ -78,7 +79,6 @@
               <i class="nav-icon fas fa-balance-scale-right"></i>
               <p>
                 Expense Summary
-                <span class="badge badge-info right">2</span>
               </p>
             </a>
           </li>
@@ -90,24 +90,6 @@
               </p>
             </a>
           </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon far fa-envelope"></i>
-              <p>
-                Mailbox
-                <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="pages/mailbox/mailbox.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Inbox</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-
           <li class="nav-header">MISCELLANEOUS</li>
           <li class="nav-item">
             <a href="{% url 'currency' %}" class="nav-link">

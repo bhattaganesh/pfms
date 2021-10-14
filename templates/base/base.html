@@ -15,31 +15,9 @@
   <!-- Theme style -->
   <link rel="stylesheet" href="{% static 'css/adminlte.min.css' %}">
   <link rel="stylesheet" href="{% static 'plugins/select2/dist/css/select2.min.css' %}">
-  <style>
-/* Works on Firefox */
-* {
-  scrollbar-width: thin;
-}
+  <link rel="stylesheet" href="{% static 'css/custom.css' %}">
 
-/* Works on Chrome, Edge, and Safari */
-*::-webkit-scrollbar {
-  width: 10px;
-}
 
-*::-webkit-scrollbar-thumb {
-  background-color: rgb(132, 132, 143);
-  border-radius: 20px;
-}
-
-	/* form errors and request messages and alerts */
-	.alert-dismissible {
-		z-index: 100;
-		position: fixed;
-		right: 2em;
-		opacity: 1;
-		margin-top: 1rem;
-	}
-  </style>
   {% block site_css %}
     
   {% endblock %}
@@ -117,23 +95,15 @@
 
 <script src="{% static 'plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js' %}"></script>
 <script src="{% static 'plugins/select2/dist/js/select2.min.js' %}"></script>
+<script src="{% static 'plugins/bootbox/dist/bootbox.min.js' %}"></script>
 
 <!-- AdminLTE App -->
 <script src="{% static 'js/adminlte.min.js' %}"></script>
-<script>
-  $(document).ready(function() {
-    setTimeout(function() {
-      $(".alert-dismissible").hide();
-    }, 3000);
-  });
+<script src="{% static 'js/custom.js' %}"></script>
 
-// In your Javascript (external .js resource or <script> tag)
-  $(document).ready(function() {
-    $('.select2').select2();
-});
-</script>
 {% block site_js %}
   
 {% endblock %}
+
 </body>
 </html>

@@ -25,6 +25,7 @@ urlpatterns = [
     path('', RedirectView.as_view(url = 'sign-in/')),
 
     path('expenses/', include('expense.urls')),
+    path('incomes/', include('income.urls')),
     path('', include('currency.urls')),
     path('', include('authentication.urls')),
 ]

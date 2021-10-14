@@ -22,9 +22,8 @@ def index(request):
 
     if request.method == 'GET':
         if exist:
-            selected_currency = Currency.objects.get(user=request.user)
-            selected_currency_list = selected_currency.currency.split(" - ")
-            return render(request, 'dashboard/currency.html', {'currencies': currencies_data, 'selected_currency_name': selected_currency_list[0]})
+            selected_currency = Currency.objects.get(user=request.user).currency.split(" - ")[0]
+            return render(request, 'dashboard/currency.html', {'currencies': currencies_data, 'selected_currency_name': selected_currency})
         return render(request, 'dashboard/currency.html', {'currencies': currencies_data})
 
 
@@ -35,11 +34,11 @@ def index(request):
             curr.save()
             messages.success(request, "Currency is choosed successfully.")
             # return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-            curr_name_value = curr.currency.split(" - ")
-            return render(request, 'dashboard/currency.html', {'currencies': currencies_data, 'selected_currency_name': curr_name_value[0]})
+            curr_name = curr.currency.split(" - ")[0]
+            return render(request, 'dashboard/currency.html', {'currencies': currencies_data, 'selected_currency_name': curr_name})
             
         curr = Currency.objects.create(user=request.user, currency=request.POST['currency'])
         curr.save()
         messages.success(request, "Currency is choosed successfully.")
-        curr_name_value = curr.currency.split(" - ")
-        return render(request, 'dashboard/currency.html', {'currencies': currencies_data, 'selected_currency_name': curr_name_value[0]})
+        curr_name = curr.currency.split(" - ")[0]
+        return render(request, 'dashboard/currency.html', {'currencies': currencies_data, 'selected_currency_name': curr_name})

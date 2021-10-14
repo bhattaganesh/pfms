@@ -1,0 +1,82 @@
+{% extends 'dashboard/dashboard.html' %}
+{% block title %}
+  Expense Categories
+{% endblock %}
+
+
+{% block site_css %}
+  .table-responsive {
+    display: table;
+  }
+{% endblock %}
+  
+
+{% block content-header1 %}
+  Expense Categories
+{% endblock  %}
+
+{% block content-header2 %}
+  Expense Categories
+{% endblock  %}
+
+{% block content %}
+ <div class="col-sm-12 col-md-12 mx-auto">
+  <div class="card card-primary">
+    <div class="card-header">
+      <h3 class="card-title">All Expense Categories</h3>
+      <div class="card-tools">
+        <a href="{% url 'add-category' %}" class="btn btn-tool btn-primary"  title="Add New Category">
+          <i class="fas fa-plus mr-1"></i> 
+          <span class="text-md">Add New Category</span>
+        </a>
+      </div>
+    </div>
+    <div class="card-body p-0 table-responsive">
+      <table class="table table-striped   text-center  table-hover">
+          <thead>
+              <tr>
+                  <th>
+                      S.N.
+                  </th>
+                  <th>
+                      Title
+                  </th>
+                  <th>
+                      Description
+                  </th>
+                  <th>
+                    Action
+                </th>
+              </tr>
+          </thead>
+          <tbody>
+              
+              {% for category in categories %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ category.title }}</td>
+                <td>{{ category.description|truncatechars:50 }}</td>
+                <td>
+                  <a href="{% url 'view-category' category.id %}" title="View this Category" class="mr-2 btn btn-sm btn-primary"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                  {% if request.user.is_admin == False  %}
+                    {% if category.created_by.is_admin == False  %}
+                      <a href="{% url 'edit-category' category.id %}" title="Edit this Category" class="mr-2 btn btn-sm btn-success"><i class="fa fa-edit" aria-hidden="true"></i></a>
+                      <a href="javascript:;" title="Delete this Category" class="  btn btn-sm btn-danger delete-btn"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                      <form action="{% url 'delete-category' category.id %}" method="post">{% csrf_token %}</form>
+                    {% endif %}
+                  {% else %}
+                    <a href="{% url 'edit-category' category.id %}" title="Edit this Category" class="mr-2 btn btn-sm btn-success"><i class="fa fa-edit" aria-hidden="true"></i></a>
+                    <a href="javascript:;" title="Delete this Category" class="  btn btn-sm btn-danger delete-btn"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                    <form action="{% url 'delete-category' category.id %}" method="post">{% csrf_token %}</form>
+                  {% endif %}
+                </td>
+            </tr>
+              {% endfor %}
+                
+          </tbody>
+      </table>
+    </div>
+    <!-- /.card-body -->
+  </div>
+ </div>
+{% endblock %}
