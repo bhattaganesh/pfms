@@ -17,12 +17,13 @@ from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, include
 from . import views
-from django.views.generic.base import RedirectView
+# from django.views.generic.base import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('dashboard/', views.index, name='dashboard'),
-    path('', RedirectView.as_view(url = 'sign-in/')),
+    # path('', RedirectView.as_view(url = 'sign-in/')),
+    path('', views.home),
 
     path('expenses/', include('expense.urls')),
     path('incomes/', include('income.urls')),

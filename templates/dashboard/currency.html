@@ -24,6 +24,7 @@
         {% csrf_token %}
         <div class="form-group">
           <select class="select2 form-control form-control-sm" name="currency" style="width: 100%;">
+            <option disabled selected>__Select-Currency__</option>
             {% for currency in currencies  %}
               {% if selected_currency_name %}
                 {% if selected_currency_name == currency.name %}

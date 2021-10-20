@@ -1,106 +1,101 @@
 {% load static %}
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
-    <!-- Brand Logo -->
-    <a href="{% url 'dashboard' %}" class="brand-link">
-      <img src="{% static 'img/logo.png' %}" alt="PFMS Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-      <span class="brand-text font-weight-light">PFMS</span>
-    </a>
+  <!-- Brand Logo -->
+  <a href="{% url 'dashboard' %}" class="brand-link">
+    <img src="{% static 'img/logo.png' %}" alt="PFMS Logo" class="brand-image img-circle elevation-3"
+      style="opacity: 0.8" />
+    <span class="brand-text font-weight-light">PFMS</span>
+  </a>
 
-    <!-- Sidebar -->
-    <div class="sidebar">
-      <!-- Sidebar user panel (optional) -->
-      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-        <div class="image">
-          <img src="{% static 'img/user2-160x160.jpg' %}" class="img-circle elevation-2" alt="User Image">
-        </div>
-        <div class="info">
-          <a href="#" class="d-block">{{ request.user.name }}</a>
-        </div>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <!-- Sidebar user panel (optional) -->
+    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+      <div class="image">
+        <img src="{% static 'img/user2-160x160.jpg' %}" class="img-circle elevation-2" alt="User Image" />
       </div>
-
-      <!-- SidebarSearch Form -->
-      <div class="form-inline">
-        <div class="input-group" data-widget="sidebar-search">
-          <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
-          <div class="input-group-append">
-            <button class="btn btn-sidebar">
-              <i class="fas fa-search fa-fw"></i>
-            </button>
-          </div>
-        </div>
+      <div class="info">
+        <a href="#" class="d-block">{{ request.user.name }}</a>
       </div>
-
-      <!-- Sidebar Menu -->
-      <nav class="mt-2">
-        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-          <li class="nav-item">
-            <a href="{% url 'dashboard' %}" class="nav-link {% if request.path == '/dashboard/' %} active {% endif %}">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
-              <p>
-                Dashboard
-              </p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{% url 'expense-categories' %}" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
-              <p>
-                Expense Categories
-              </p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{% url 'income-categories' %}" class="nav-link">
-              <i class="nav-icon fas fa-th-large"></i>
-              <p>
-                Income Categories
-              </p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{% url 'expenses' %}" class="nav-link">
-              <i class="nav-icon fas fa-money-bill-wave-alt"></i>
-              <p>
-                Expenses
-              </p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{% url 'incomes' %}" class="nav-link">
-              <i class="nav-icon fas fa-hand-holding-usd"></i>
-              <p>
-                Incomes
-              </p>
-            </a>
-          </li>
-          <li class="nav-header">Summary</li>
-          <li class="nav-item">
-            <a href="pages/calendar.html" class="nav-link">
-              <i class="nav-icon fas fa-balance-scale-right"></i>
-              <p>
-                Expense Summary
-              </p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="pages/gallery.html" class="nav-link">
-              <i class="nav-icon fas fa-balance-scale-left"></i>
-              <p>
-                Income Summary
-              </p>
-            </a>
-          </li>
-          <li class="nav-header">MISCELLANEOUS</li>
-          <li class="nav-item">
-            <a href="{% url 'currency' %}" class="nav-link">
-              <i class="nav-icon fas fa-coins"></i>
-              <p> Choose Currency</p>
-            </a>
-          </li>
-
-        </ul>
-      </nav>
-      <!-- /.sidebar-menu -->
     </div>
-    <!-- /.sidebar -->
-  </aside>
+
+    <!-- SidebarSearch Form -->
+    <div class="form-inline">
+      <div class="input-group" data-widget="sidebar-search">
+        <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search" />
+        <div class="input-group-append">
+          <button class="btn btn-sidebar">
+            <i class="fas fa-search fa-fw"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar Menu -->
+    <nav class="mt-2">
+      <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+        <li class="nav-item">
+          <a href="{% url 'dashboard' %}" class="
+              nav-link
+              {% if request.path == '/dashboard/' %} active {% endif %} ">
+            <i class="nav-icon fas fa-tachometer-alt"></i>
+            <p>Dashboard</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'expense-categories' %}" class="nav-link
+          {% if request.path == '/expenses/categories/' %} active {% endif %}">
+            <i class="nav-icon fas fa-th"></i>
+            <p>Expense Categories</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'income-categories' %}" class="nav-link
+          {% if request.path == '/incomes/categories/' %} active {% endif %}">
+            <i class="nav-icon fas fa-th-large"></i>
+            <p>Income Categories</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'expenses' %}" class="nav-link
+          {% if request.path == '/expenses/' %} active {% endif %}">
+            <i class="nav-icon fas fa-money-bill-wave-alt"></i>
+            <p>Expenses</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'incomes' %}" class="nav-link
+          {% if request.path == '/incomes/' %} active {% endif %}">
+            <i class="nav-icon fas fa-hand-holding-usd"></i>
+            <p>Incomes</p>
+          </a>
+        </li>
+        <li class="nav-header">Summary</li>
+        <li class="nav-item">
+          <a href="{% url 'expense-summary' %}" class="nav-link
+          {% if request.path == '/expenses/summary/' %} active {% endif %}">
+            <i class="nav-icon fas fa-balance-scale-right"></i>
+            <p>Expense Summary</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'income-summary' %}" class="nav-link
+          {% if request.path == '/incomes/summary/' %} active {% endif %}">
+            <i class="nav-icon fas fa-balance-scale-left"></i>
+            <p>Income Summary</p>
+          </a>
+        </li>
+        <li class="nav-header">MISCELLANEOUS</li>
+        <li class="nav-item">
+          <a href="{% url 'currency' %}" class="nav-link
+          {% if request.path == '/currencies/' %} active {% endif %}">
+            <i class="nav-icon fas fa-coins"></i>
+            <p>Choose Currency</p>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    <!-- /.sidebar-menu -->
+  </div>
+  <!-- /.sidebar -->
+</aside>

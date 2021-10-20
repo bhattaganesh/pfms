@@ -12,7 +12,7 @@ class AddIncomeForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
         super(AddIncomeForm, self).__init__(*args, **kwargs)
-        self.fields['income_category'].queryset = IncomeCategory.objects.filter(Q(created_by=user) | Q(created_by=1)) 
+        self.fields['income_category'].queryset = IncomeCategory.objects.filter(Q(created_by=user) | Q(created_by__is_admin=True)) 
 
     class Meta:
         model = Income

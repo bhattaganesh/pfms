@@ -1,6 +1,7 @@
+import pdb
 from django.core.checks import messages
 from django.http.response import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 import json
 import os
 from django.conf import settings
@@ -28,17 +29,30 @@ def index(request):
 
 
     if request.method == 'POST':
-        if exist:
-            curr = Currency.objects.get(user=request.user)
-            curr.currency = request.POST['currency']
+        if request.POST['currency'] != "" :
+            try:
+                test_val = request.POST['currency'].split(" - ")
+                test_dict = {'name': test_val[0], 'value': test_val[1]}
+                if not test_dict in currencies_data:
+                    messages.error(request, "Invalid currency.")
+                    return HttpResponseRedirect(request.META.get("HTTP_REFERER"))    
+            except:
+                messages.error(request, "Invalid currency.")
+                return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
+            # import pdb; pdb.set_trace()
+            if exist:
+                curr = Currency.objects.get(user=request.user)
+                curr.currency = request.POST['currency']
+                curr.save()
+                messages.success(request, "Currency is choosed successfully.")
+                curr_name = curr.currency.split(" - ")[0]
+                return render(request, 'dashboard/currency.html', {'currencies': currencies_data, 'selected_currency_name': curr_name})
+                
+            curr = Currency.objects.create(user=request.user, currency=request.POST['currency'])
             curr.save()
             messages.success(request, "Currency is choosed successfully.")
-            # return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
             curr_name = curr.currency.split(" - ")[0]
             return render(request, 'dashboard/currency.html', {'currencies': currencies_data, 'selected_currency_name': curr_name})
-            
-        curr = Currency.objects.create(user=request.user, currency=request.POST['currency'])
-        curr.save()
-        messages.success(request, "Currency is choosed successfully.")
-        curr_name = curr.currency.split(" - ")[0]
-        return render(request, 'dashboard/currency.html', {'currencies': currencies_data, 'selected_currency_name': curr_name})
+        else:
+            messages.error(request, "Please select currency.")
+            return HttpResponseRedirect(request.META.get("HTTP_REFERER"))

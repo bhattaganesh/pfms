@@ -1,91 +1,83 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-	<meta charset="utf-8">
-	<meta name="author" content="Kodinger">
-	<meta name="viewport" content="width=device-width,initial-scale=1">
-	<title>
-    {% block title %}
-        
-    {% endblock  %} | PFMS
-    </title>
-	<link rel="shortcut icon" type="image/jpg" href="{% static 'front/img/logo.png' %}"/>
-	<link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
-	<link rel="stylesheet" href="{% static 'front/plugins/bootstrap/dist/css/bootstrap.min.css' %}" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-	<link rel="stylesheet" type="text/css" href="{% static 'front/css/my-login.css' %}">
-	<style>
-		/* Works on Firefox */
-		* {
-			scrollbar-width: thin;
-		}
-		
-		/* Works on Chrome, Edge, and Safari */
-		*::-webkit-scrollbar {
-			width: 10px;
-		}
-		
-		*::-webkit-scrollbar-thumb {
-			background-color: rgb(132, 132, 143);
-			border-radius: 20px;
-		}
+  <meta charset="utf-8" />
+  <meta name="author" content="Kodinger" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{% block title %} {% endblock %} | PFMS</title>
+  <link rel="shortcut icon" type="image/jpg" href="{% static 'front/img/logo.png' %}" />
+  <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}" />
+  <link rel="stylesheet" href="{% static 'front/plugins/bootstrap/dist/css/bootstrap.min.css' %}"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+  <link rel="stylesheet" type="text/css" href="{% static 'front/css/my-login.css' %}" />
+  <style>
+    /* Works on Firefox */
+    * {
+      scrollbar-width: thin;
+    }
 
+    /* Works on Chrome, Edge, and Safari */
+    *::-webkit-scrollbar {
+      width: 10px;
+    }
 
+    *::-webkit-scrollbar-thumb {
+      background-color: rgb(132, 132, 143);
+      border-radius: 20px;
+    }
 
-
-	/* form errors and request messages and alerts */
-	.alert-dismissible {
-		z-index: 100;
-		position: fixed;
-		right: 2em;
-		opacity: 0.8;
-		margin-top: 2rem;
-	}
-	</style>
-    {% block site_css %}
-      
-    {% endblock %}
+    /* form errors and request messages and alerts */
+    .alert-dismissible {
+      z-index: 100;
+      position: fixed;
+      right: 2em;
+      opacity: 0.8;
+      margin-top: 2rem;
+    }
+  </style>
+  {% block site_css %} {% endblock %}
 </head>
 
-<body class="my-login-page" style="background-color: #34495e;">
-	<section class="h-100">
-		{% include "partials/messages.html" %}
-		<div class="container h-100">
-			<div class="row justify-content-md-center h-100">
-				<div class="card-wrapper">
-					<div class="brand mt-0" style=" border: 10px solid #34495e; border-radius: 50%;">
-						<img src="{% static 'front/img/logo.png' %}" alt="logo">
-					</div>
-					<div class="card fat" style="margin-top: -70px;">
-						<div class="card-body">
-    						<h4 class="card-title text-center mt-2">{% block sub-title %} {% endblock %}</h4>
+<body class="my-login-page" style="background-color: #34495e">
+  <section class="h-100">
+    {% include "partials/messages.html" %}
+    <div class="container h-100">
+      <div class="row justify-content-md-center h-100">
+        <div class="card-wrapper">
+          <div class="brand mt-0" style="border: 10px solid #34495e; border-radius: 50%">
+            <img src="{% static 'front/img/logo.png' %}" alt="logo" />
+          </div>
+          <div class="card fat" style="margin-top: -70px">
+            <div class="card-body">
+              <h4 class="card-title text-center mt-2">
+                {% block sub-title %} {% endblock %}
+              </h4>
 
-							{% block content %}
-                              
-                            {% endblock %}
-						</div>
-					</div>
-					<div class="footer text-white">
-						Copyright &copy; 2021 &mdash; PFMS 
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
+              {% block content %} {% endblock %}
+            </div>
+          </div>
+          <div class="footer text-white">
+            Copyright &copy; 2021 &mdash; PFMS
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-	<script src="{% static 'front/plugins/jquery/dist/jquery.slim.min.js' %}"></script>
-	<script src="{% static 'front/plugins/popper.js/dist/umd/popper.min.js' %}"></script>
-	<script src="{% static 'front/plugins/bootstrap/dist/js/bootstrap.min.js' %}"></script>
-	<script src="{% static 'front/js/my-login.js' %}"></script>
-	<script>
-		$(document).ready(function() {
-			setTimeout(function() {
-				$(".alert-dismissible").hide();
-			}, 3000);
-		});
-	</script>
-    {% block site_js %}
-
-    {% endblock %}
+  <script src="{% static 'front/plugins/jquery/dist/jquery.slim.min.js' %}"></script>
+  <script src="{% static 'front/plugins/popper.js/dist/umd/popper.min.js' %}"></script>
+  <script src="{% static 'front/plugins/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'front/js/my-login.js' %}"></script>
+  <script>
+    $(document).ready(function () {
+      setTimeout(function () {
+        $(".alert-dismissible").hide();
+      }, 3000);
+    });
+  </script>
+  {% block site_js %} {% endblock %}
 </body>
+
 </html>

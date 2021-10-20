@@ -1,8 +1,7 @@
-from os import name
 from django.shortcuts import redirect, render
 from django.views import View
 import json
-from django.http import JsonResponse
+from django.http import JsonResponse, request
 # from django.contrib.auth.models import User
 from authentication.models import User
 from django.contrib import messages
@@ -14,6 +13,8 @@ from django.contrib.auth.decorators import login_required
 
 class RegistrationView(View):
     def get(self, request):
+        if request.user.is_authenticated:
+            return redirect('dashboard')
         return render(request, 'auth/register.html')
 
     def post(self, request):
@@ -123,6 +124,8 @@ class CPasswordValidationview(View):
 
 class LoginView(View):
     def get(self, request):
+        if request.user.is_authenticated:
+            return redirect('dashboard')
         return render(request, 'auth/login.html')
 
     def post(self, request):

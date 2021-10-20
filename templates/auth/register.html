@@ -1,62 +1,98 @@
-{% extends 'base/front-base.html' %}
-{% load static %}
-{% block title %}
-    Register
-{% endblock %}
-
-{% block sub-title %}
-	Welcome
-{% endblock %}
+{% extends 'base/front-base.html' %} 
+{% load static %} 
+{% block title %} Register {% endblock %} 
+{% block sub-title %} Welcome {% endblock %} 
 {% block content %}
-	<form method="POST" action="{% url 'signup' %}" class="my-login-validation" novalidate="">
-		{% csrf_token %}
-		<div class="form-group">
-			<label for="name">Name</label>
-			<input id="name" type="text" class="form-control" name="name" value="{{ fieldValues.name }}" required autofocus>
-			<div class="invalid-feedback name-feedback d-none"></div>
-		</div>
+<form
+  method="POST"
+  action="{% url 'signup' %}"
+  class="my-login-validation"
+  novalidate=""
+>
+  {% csrf_token %}
+  <div class="form-group">
+    <label for="name">Name</label>
+    <input
+      id="name"
+      type="text"
+      class="form-control"
+      name="name"
+      value="{{ fieldValues.name }}"
+      required
+      autofocus
+    />
+    <div class="invalid-feedback name-feedback d-none"></div>
+  </div>
 
-		<div class="form-group">
-			<label for="email">E-Mail Address</label>
-			<input id="email" type="email" class="form-control" name="email" value="{{ fieldValues.email }}" required>
-			<div class="invalid-feedback email-feedback d-none"></div>
-			<p class="text text-sm text-success email-success-feedback d-none"></p>
+  <div class="form-group">
+    <label for="email">E-Mail Address</label>
+    <input
+      id="email"
+      type="email"
+      class="form-control"
+      name="email"
+      value="{{ fieldValues.email }}"
+      required
+    />
+    <div class="invalid-feedback email-feedback d-none"></div>
+    <p class="text text-sm text-success email-success-feedback d-none"></p>
+  </div>
 
-		</div>
+  <div class="form-group">
+    <label for="password">Password</label>
+    <input
+      id="password"
+      type="password"
+      class="form-control"
+      name="password"
+      required
+    />
+    <div class="invalid-feedback password-feedback d-none"></div>
+  </div>
 
-		<div class="form-group">
-			<label for="password">Password</label>
-			<input id="password" type="password" class="form-control" name="password" required>
-			<div class="invalid-feedback password-feedback d-none"></div>
+  <div class="form-group">
+    <label for="cpassword">Confirmation Password</label>
+    <input
+      id="cpassword"
+      type="password"
+      class="form-control"
+      name="cpassword"
+      required
+    />
+    <div class="invalid-feedback cpassword-feedback d-none"></div>
+  </div>
 
-		</div>
+  <div class="form-group">
+    <div class="custom-checkbox custom-control">
+      <input
+        type="checkbox"
+        name="agree"
+        id="agree"
+        class="custom-control-input"
+        required="true"
+      />
+      <label for="agree" class="custom-control-label"
+        >I agree to the <a href="#">Terms and Conditions</a></label
+      >
+      <div class="invalid-feedback">
+        You must agree with our Terms and Conditions
+      </div>
+    </div>
+  </div>
 
-		<div class="form-group">
-			<label for="cpassword">Confirmation Password</label>
-			<input id="cpassword" type="password" class="form-control" name="cpassword" required>
-			<div class="invalid-feedback cpassword-feedback d-none"></div>
-
-		</div>
-
-		<div class="form-group">
-			<div class="custom-checkbox custom-control">
-				<input type="checkbox" name="agree" id="agree" class="custom-control-input" required="true">
-				<label for="agree" class="custom-control-label">I agree to the <a href="#">Terms and Conditions</a></label>
-				<div class="invalid-feedback">
-					You must agree with our Terms and Conditions
-				</div>
-			</div>
-		</div>
-
-		<div class="form-group m-0">
-			<input type="submit" value="Register"  class="btn btn-primary btn-block submit-btn">
-		</div>
-		<div class="mt-4 text-center">
-			Already have an account? <a href="{% url 'signin' %}">Login</a>
-		</div>
-	</form>
-{% endblock %}
+  <div class="form-group m-0">
+    <input
+      type="submit"
+      value="Register"
+      class="btn btn-primary btn-block submit-btn"
+    />
+  </div>
+  <div class="mt-4 text-center">
+    Already have an account? <a href="{% url 'signin' %}">Login</a>
+  </div>
+</form>
+{% endblock %} 
 
 {% block site_js %}
-  <script src="{% static 'front/js/register.js' %}"></script>
+<script src="{% static 'front/js/register.js' %}"></script>
 {% endblock %}

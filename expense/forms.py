@@ -14,7 +14,7 @@ class AddExpenseForm(forms.ModelForm):
         user = kwargs.pop('user')
         super(AddExpenseForm, self).__init__(*args, **kwargs)
         # self.fields['expense_category'].queryset = ExpenseCategory.objects.filter(created_by=user) | ExpenseCategory.objects.filter(created_by=1)
-        self.fields['expense_category'].queryset = ExpenseCategory.objects.filter(Q(created_by=user) | Q(created_by=1)) 
+        self.fields['expense_category'].queryset = ExpenseCategory.objects.filter(Q(created_by=user) | Q(created_by__is_admin=True)) 
 
     class Meta:
         model = Expense

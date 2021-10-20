@@ -1,11 +1,16 @@
+import pdb
+from django.http.response import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from expense.forms import AddExpenseForm, AddCateoryForm
 from django.contrib import messages
 from django.db.models import Q
-
+import datetime as dt
 from expense.models import Expense, ExpenseCategory
 from currency.models import Currency
+import json
+from django.core.paginator import Paginator
+
 
 # Create your views here.
 @login_required(login_url='signin')
@@ -14,9 +19,17 @@ def index(request):
     if Currency.objects.filter(user=request.user).exists():
         currency = Currency.objects.get(user=request.user).currency.split(" - ")[0]
     else:
-        currency = 'NPR'
-    return render(request, 'expense/index.html', {'expenses': expenses, 'currency': currency})
+        messages.info(request, "Please, choose your prefered currency.")
+        return redirect('currency')
 
+    paginator = Paginator(expenses, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'expense/index.html', {
+        'currency': currency,
+        'page_obj': page_obj
+        })
 
 @login_required(login_url='signin')
 def addExpense(request):
@@ -57,14 +70,30 @@ def deleteExpense(request, id):
     messages.error(request, "Sorry, invalid request.")
     return redirect(request.META.get('HTTP_REFERER'))
 
+@login_required(login_url='signin')
+def deleteExpenses(request):
+    if request.method =="POST":
+        ids = list(map(lambda id:int(id), request.POST['ids'].split(",")))
 
+        def deleteRecord(id):
+            # import pdb; pdb.set_trace()
+            return get_object_or_404(Expense, pk=id).delete()
+        ids = list(map(deleteRecord, list(ids)))
+
+        # import pdb; pdb.set_trace()
+        messages.success(request, "Expense Deleted successfully.")
+        return redirect(request.META.get('HTTP_REFERER'))
+    messages.error(request, "Sorry, invalid request.")
+    return redirect(request.META.get('HTTP_REFERER'))
+
+
+###################################################################################  for expense category
 
 
 @login_required(login_url='signin')
 def listAllCategories(request):
     categories = ExpenseCategory.objects.filter(Q(created_by=request.user) | Q(created_by=1))[::-1]
     return render(request, 'expense-category/index.html', {'categories': categories})
-
 
 @login_required(login_url='signin')
 def addCategory(request):
@@ -104,3 +133,148 @@ def deleteCategory(request, id):
         return redirect(request.META.get('HTTP_REFERER'))
     messages.error(request, "Sorry, invalid request.")
     return redirect(request.META.get('HTTP_REFERER'))
+
+@login_required(login_url='signin')
+def deleteCategories(request):
+    if request.method =="POST":
+        ids = list(map(lambda id:int(id), request.POST['ids'].split(",")))
+        # import pdb; pdb.set_trace()
+
+        def deleteRecord(id):
+            # import pdb; pdb.set_trace()
+            category = get_object_or_404(ExpenseCategory, pk=id)
+            category.delete()
+
+        ids = list(map(deleteRecord, list(ids)))
+
+        messages.success(request, "Expense Category Deleted successfully.")
+        return redirect(request.META.get('HTTP_REFERER'))
+    messages.error(request, "Sorry, invalid request.")
+    return redirect(request.META.get('HTTP_REFERER'))
+
+###################################################################################  for expense summary
+
+@login_required(login_url='signin')
+def expenseSummaryByCategory(request):
+    todays_date = dt.date.today()
+    day = int(request.GET['day'])
+    # import pdb; pdb.set_trace()
+    six_month_ago = todays_date - dt.timedelta(days=day)
+    expenses = Expense.objects.filter(expense_by=request.user, entry_date__gte=six_month_ago, entry_date__lte=todays_date)
+    finalrep = {}
+
+
+    def get_category(expense):
+        return expense.expense_category
+    
+    category_list = list(set(map(get_category, expenses)))
+
+    def get_expense_category_amount(category):
+        amount = 0
+        filter_by_category = expenses.filter(expense_category=category)
+        for item in filter_by_category:
+            amount += item.amount
+        return amount
+
+    for x in expenses:
+        for y in category_list:
+            finalrep[y.title] = get_expense_category_amount(y)
+    # import pdb; pdb.set_trace()
+    return JsonResponse({'category_data': finalrep}, safe=False)
+
+def expenseSummary(request):
+    if not Currency.objects.filter(user=request.user).exists():
+        messages.info(request, "Please, choose your prefered currency.")
+        return redirect('currency')
+
+    expenses = Expense.objects.filter(expense_by=request.user)
+    todays_amount = 0
+    todays_count = 0
+    this_weeks_amount = 0
+    this_weeks_count = 0
+    this_months_amount = 0
+    this_months_count = 0
+    this_years_amount = 0
+    this_years_count = 0
+    today = dt.date.today()
+    week_ago = today - dt.timedelta(days=7)
+    month_ago = today - dt.timedelta(days=30)
+    year_ago = today - dt.timedelta(days=366)
+    for expense in expenses:
+        if expense.entry_date == today:
+            todays_amount += expense.amount
+            todays_count += 1
+            
+        if expense.entry_date >= week_ago:
+            this_weeks_amount += expense.amount
+            this_weeks_count += 1
+
+        if expense.entry_date >= month_ago:
+            this_months_amount += expense.amount
+            this_months_count += 1
+
+        if expense.entry_date >= year_ago:
+            this_years_amount += expense.amount
+            this_years_count += 1
+    currency = Currency.objects.get(user=request.user).currency.split(" - ")[0]
+    context = {
+        'today': {
+            'todays_amount': todays_amount,
+            'todays_count': todays_count
+        },
+        'week': {
+            'this_weeks_amount': this_weeks_amount,
+            'this_weeks_count': this_weeks_count
+        },
+        'month': {
+            'this_months_amount': this_months_amount,
+            'this_months_count': this_months_count
+        },
+        'year': {
+            'this_years_amount': this_years_amount,
+            'this_years_count': this_years_count
+        },
+        'currency': currency
+    }
+    # import pdb; pdb.set_trace()
+    return render(request, 'expense/expense-summary.html', context)
+
+
+
+def monthlyWiseExpense(request):
+    today = dt.date.today()
+    six_month_ago = today - dt.timedelta(days=180)
+    expenses = Expense.objects.filter(expense_by=request.user, entry_date__gte=six_month_ago, entry_date__lte=today)
+    months = []
+    for expense in expenses:
+        print(expense)
+        # month = dt.date(2021, 2, 5).month
+        # dateformat = expense.entry_date.strftime("%Y, %m, %d")
+        month = expense.entry_date.strftime("%m")
+        months.append(month)
+    # import pdb; pdb.set_trace()
+    months = list(set(months))
+    return HttpResponse(months)
+
+
+######################################################################## expense search functionality
+
+def expenseSearch(request):
+    if request.method == 'POST':
+        search_str = json.loads(request.body).get('searchStr')
+        expenses = Expense.objects.filter(
+            Q(expense_by=request.user) &
+                (
+                    Q(amount__istartswith=search_str) |
+                    Q(description__icontains=search_str) |
+                    Q(expense_category__title__icontains=search_str) |
+                    Q(expense_date__istartswith=search_str) |
+                    Q(entry_date__istartswith=search_str)
+                )
+        ).order_by('-id')
+
+        data = expenses.values('expense_category__title','amount','description','id','expense_date','entry_date')
+        for d in data:
+            d['category_title'] = d.pop('expense_category__title')
+            d['date'] = d.pop('expense_date')
+        return JsonResponse(list(data), safe=False)

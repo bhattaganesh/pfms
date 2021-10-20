@@ -28,13 +28,15 @@
         <a href="{% url 'add-income-category' %}" class="btn btn-tool btn-primary"  title="Add New Category">
           <i class="fas fa-plus mr-1"></i> 
           <span class="text-md">Add New Category</span>
+          <span data-del-url="{% url 'delete-income-categories' %}" id="multipleCatDelForm" class="d-block"></span>
         </a>
       </div>
     </div>
     <div class="card-body p-0 table-responsive">
-      <table class="table table-striped   text-center  table-hover">
+      <table class="table table-striped   text-center  table-hover datatable" id="dataTable">
           <thead>
               <tr>
+                  <th width="10"></th>
                   <th>
                       S.N.
                   </th>
@@ -51,8 +53,9 @@
           </thead>
           <tbody>
               
-              {% for category in page_obj %}
-              <tr>
+              {% for category in categories %}
+              <tr data-entry-id = "{{ category.id }}">
+                <td></td>
                 <td>{{ forloop.counter }}</td>
                 <td>{{ category.title }}</td>
                 <td>{{ category.description|truncatechars:50 }}</td>
@@ -76,37 +79,6 @@
                 
           </tbody>
       </table>
-      <div class="float-right">
-        <!-- {{ page_obj.number }}-2/{{ page_obj.paginator.num_pages }} -->
-        <span class="mr-2">
-          Showing Page {{ page_obj.number }}  of {{ page_obj.paginator.num_pages }}
-
-        </span>
-
-        <div class="btn-group">
-          
-          {% if page_obj.has_previous %}
-          <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-default btn-sm">
-            <i class="fas fa-chevron-left"></i>
-          </a>
-          {% else %}
-          <button type="button" class="btn btn-default btn-sm" disabled>
-            <i class="fas fa-chevron-left"></i>
-          </button>
-          {% endif %}
-            
-          {% if page_obj.has_next %}
-          <a href="?page={{ page_obj.next_page_number }}" class="btn btn-default btn-sm">
-            <i class="fas fa-chevron-right"></i>
-          </a>
-          {% else %}
-          <button type="button" class="btn btn-default btn-sm" disabled>
-            <i class="fas fa-chevron-right"></i>
-          </button>
-          {% endif %}
-        </div>
-        <!-- /.btn-group -->
-      </div>
     </div>
     <!-- /.card-body -->
   </div>

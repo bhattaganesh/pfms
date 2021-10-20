@@ -1,0 +1,134 @@
+{% extends 'dashboard/dashboard.html' %}
+{% load static %}
+{% block title %}
+Expense Summary
+{% endblock %}
+
+{% block content-header1 %}
+Expense Summary
+{% endblock %}
+
+{% block content-header2 %}
+Expense Summary
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-primary">
+                <div class="inner">
+                    <h3>{{ today.todays_count }}</h3>
+                    <h5 class = "font-weight-bold">TODAY</h5>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-money-bill-wave-alt"></i>
+                </div>
+                <span class="small-box-footer text-lg font-weight-bold">{{ currency }}. {{ today.todays_amount }}</span>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-secondary">
+                <div class="inner">
+                    <h3>{{ week.this_weeks_count }}</h3>
+                    <h5 class = "font-weight-bold">THIS WEEK</h5>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-money-bill-wave-alt"></i>
+                </div>
+                <span class="small-box-footer text-lg font-weight-bold">{{ currency }}. {{ week.this_weeks_amount }}</span>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-success">
+                <div class="inner">
+                    <h3>{{ month.this_months_count }}</h3>
+                    <h5 class = "font-weight-bold">THIS MONTH</h5>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-money-bill-wave-alt"></i>
+                </div>
+                <span class="small-box-footer text-lg font-weight-bold">{{ currency }}. {{ month.this_months_amount }}</span>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-info">
+                <div class="inner">
+                    <h3>{{ year.this_years_count }}</h3>
+                    <h5 class = "font-weight-bold">THIS YEAR</h5>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-money-bill-wave-alt"></i>
+                </div>
+                <span class="small-box-footer text-lg font-weight-bold">{{ currency }}. {{ year.this_years_amount }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="col-12 mx-auto">
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fas fa-chart-pie mr-1"></i>
+                Demographic Report
+            </h3>
+            <div class="card-tools" style="display: flex; flex-direction: columns; align-items:center">
+                <ul class="nav nav-pills ml-auto">
+                    <li class="nav-item mr-2">
+                        <select class="form-control" id="dayChart" name="day">
+                            <option  disabled selected>Select one</option>
+                            <option value="0">Today</option>
+                            <option value="7">This Week</option>
+                            <option value="30">This Month</option>
+                            <option value="366">Year</option>
+                        </select>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link chart-type active" data-chart-type="bar" href="javascript:;"
+                            data-toggle="tab">Bar</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link chart-type" data-chart-type="line" href="javascript:;"
+                            data-toggle="tab">Line</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link chart-type" data-chart-type="doughnut" href="javascript:;"
+                            data-toggle="tab">Donut</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link chart-type" data-chart-type="pie" href="javascript:;"
+                            data-toggle="tab">Pie</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="chart col-sm-12 col-lg-8 mx-auto">
+            <input type="hidden" data-summary-url = "{% url 'expense-summary-by-category' %}">
+            <canvas id="myChart" class="bg-light p-3" style="max-height: 400px; max-width: 100%;"></canvas>
+
+
+            <div class="chartjs-size-monitor">
+                <div class="chartjs-size-monitor-expand">
+                    <div class=""></div>
+                </div>
+                <div class="chartjs-size-monitor-shrink">
+                    <div class=""></div>
+                </div>
+                <canvas id="donutChart"
+                    style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%; display: block; width: 537px;"
+                    width="537" height="250" class="chartjs-render-monitor"></canvas>
+            </div>
+        </div>
+    </div>
+    <!-- /.card-body -->
+</div>
+</div>
+{% endblock %}
+
+{% block site_js %}
+<script src="{% static 'js/my-chart.js' %}"></script>
+{% endblock %}
