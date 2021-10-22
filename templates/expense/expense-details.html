@@ -29,14 +29,6 @@
             <tbody>
                 <tr>
                     <th>
-                        ID
-                    </th>
-                    <td>
-                        {{ expense.id }}
-                    </td>
-                </tr>
-                <tr>
-                    <th>
                         Expense Category
                     </th>
                     <td>
@@ -48,7 +40,7 @@
                         Entry Date
                     </th>
                     <td>
-                        {{ expense.entry_date }}
+                        {{ expense.entry_date | date:'Y-m-d' }}
                     </td>
                 </tr>
                 <tr>
@@ -56,7 +48,7 @@
                         Expense Date
                     </th>
                     <td>
-                        {{ expense.expense_date }}
+                        {{ expense.expense_date | date:'Y-m-d' }}
                     </td>
                 </tr>
                 <tr>
@@ -74,6 +66,14 @@
                     <td>
                         {{ expense.description }}
                     </td>
+                </tr>
+                <tr>
+                  <th>
+                      Last Time Updated at:
+                  </th>
+                  <td>
+                      {{ expense.updated_at | date:'Y-m-d' }}
+                  </td>
                 </tr>
             </tbody>
         </table>

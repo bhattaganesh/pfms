@@ -1,0 +1,156 @@
+{% extends 'base/base.html' %} 
+{% load static %} 
+
+{% block title %} Profile {% endblock %} 
+
+{% block site_css %}
+<style>
+  .errorlist li {
+    color: lightcoral;
+    font-size: 14px;
+    list-style: none;
+  }
+</style>
+{% endblock %} 
+{% block content-header1 %} Profile {% endblock %} 
+
+{% block content-header2 %} Profile {% endblock %} 
+
+{% block content %}
+<div class="col-sm-8 col-md-6 mx-auto">
+    <div class="card card-widget widget-user shadow">
+        <!-- Add the bg color to the header using any of the bg-* classes -->
+        <div class="widget-user-header bg-info">
+          <h3 class="widget-user-username output_name mt-4">
+            {% comment %}
+              {{ request.user.name | title }}
+              {{ request.user.name | lower }}
+              {{ request.user.name | upper }}
+              {{ request.user.name | lower | capfirst }}
+              {% endcomment %}
+            {{ request.user.name }}
+
+          </h3>
+        </div>
+        <div class="widget-user-image" onclick="document.getElementById('id_avatar').click();" style="cursor: pointer;">
+          
+          {% if request.user.user_profile.avatar %}
+            <img class="img-circle elevation-2" id="myImg" alt="User Avatar" style="width: 110px; height: 110px; border: 3px solid white;" src="{{ MEDIA_URL }}{{ request.user.user_profile.avatar.url }}" alt="User Avatar">
+            {% else %}
+            <img class="img-circle elevation-2" id="myImg" src="{% static 'img/avatar.png' %}" alt="User Avatar">
+          {% endif %}
+            
+          <i class="fas fa-camera text-gray-dark bg-white elevation-2 rounded-circle p-1"  style = "margin-left:-17px; z-index: 888; cursor: pointer;"></i>
+        </div>
+        <div class="card-footer">
+          <div class="row">
+            <div class="col-sm-4 border-right">
+              <div class="description-block">
+                <h5 class="description-header">{{ currency  }}. {{ total_expense }} <span class="badge badge-pill badge-primary">{{ expense_count }}</span></h5>
+                <span class="description-text">Expenses</span>
+              </div>
+              <!-- /.description-block -->
+            </div>
+            <!-- /.col -->
+            <div class="col-sm-4 border-right">
+              <div class="description-block">
+                <h5 class="description-header">{{ currency  }}. {{ total_income }} <span class="badge badge-pill badge-primary">{{ income_count }}</span></h5>
+                <span class="description-text">Incomes</span>
+              </div>
+              <!-- /.description-block -->
+            </div>
+            <!-- /.col -->
+            <div class="col-sm-4">
+              <div class="description-block">
+                <h5 class="description-header text-{% if profit_or_loss_key == 'Loss' %}danger{% else %}success{% endif %}">{{ currency  }}. {{ profit_or_loss_val }}</h5>
+                <span class="description-text">{{ profit_or_loss_key }}</span>
+              </div>
+              <!-- /.description-block -->
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
+        </div>
+        <div class="card-body">
+            <form method="POST" id="updateProfileForm" enctype="multipart/form-data">
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="profile_name" class="">Full Name:</label>
+                <input type="text" name="name" value="{{ request.user.name }}" id="profile_name" class="form-control input_name" required>
+              </div>
+                {{ form.as_p }}
+                <div class="d-flex justify-content-between">
+                  <button type="reset" class="btn btn-default float-left">Cancel</button>
+                  <button type="submit" class="btn btn-info update-profile-submit flaot-right">Save</button>
+                </div>
+            </form>
+        </div>
+      </div>
+{% endblock %}
+
+{% block site_js %}
+<script>
+  $('#id_avatar').parent().addClass('d-none');
+  $(document).ready(function(){
+    $(".input_name").keyup(function(){
+        var currentText = $(this).val();
+
+        $(".output_name").text(currentText);
+
+      if(!$('.input_name').val()){
+        var text = "{{ request.user.name }}";
+        $(".output_name").text(text);
+      }
+    });
+});
+
+
+  function readURL(input,id) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            $('#'+id).attr('src', e.target.result);
+        }
+
+        reader.readAsDataURL(input.files[0]);
+    }
+  }
+  
+  $(function () { //document ready call
+      $("#id_avatar").change(function(){
+          readURL(this, 'myImg');
+      });
+  });
+
+  $('#updateProfileForm ').submit(function(e){
+      e.preventDefault();
+      $form = $(this)
+      var formData = new FormData(this);
+      $.ajax({
+          url: "{% url 'user-info' %}",
+          type: 'POST',
+          data: formData,
+          success: function (response) {
+              $('.error').remove();
+              //console.log(response)
+              if(!response.status){
+                  $.each(response.errors, function(name, error){
+                      error = '<span class="error text text-danger">' + error + '</span>'
+                      $form.find('[name=' + name + ']').after(error);
+                  })
+              }
+              else{
+                  bootbox.alert(response.msg, function(){
+                    window.location = ""
+                  });
+              }
+          },
+          cache: false,
+          contentType: false,
+          processData: false
+      });
+  });
+
+  </script>
+{% endblock %}

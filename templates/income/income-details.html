@@ -29,14 +29,6 @@
             <tbody>
                 <tr>
                     <th>
-                        ID
-                    </th>
-                    <td>
-                        {{ income.id }}
-                    </td>
-                </tr>
-                <tr>
-                    <th>
                         Income Category
                     </th>
                     <td>
@@ -48,7 +40,7 @@
                         Entry Date
                     </th>
                     <td>
-                        {{ income.entry_date }}
+                        {{ income.entry_date | date:'Y-m-d' }}
                     </td>
                 </tr>
                 <tr>
@@ -56,7 +48,7 @@
                         Income Date
                     </th>
                     <td>
-                        {{ income.income_date }}
+                        {{ income.income_date | date:'Y-m-d' }}
                     </td>
                 </tr>
                 <tr>
@@ -74,6 +66,14 @@
                     <td>
                         {{ income.description }}
                     </td>
+                </tr>
+                <tr>
+                  <th>
+                      Last Time Updated at:
+                  </th>
+                  <td>
+                      {{ income.updated_at | date:'Y-m-d' }}
+                  </td>
                 </tr>
             </tbody>
         </table>

@@ -16,6 +16,8 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, include
+from django.conf.urls.static import static
+from django.conf import settings
 from . import views
 # from django.views.generic.base import RedirectView
 
@@ -29,6 +31,7 @@ urlpatterns = [
     path('incomes/', include('income.urls')),
     path('', include('currency.urls')),
     path('', include('authentication.urls')),
-]
+    path('', include('userInfo.urls')),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 handler404 = "pfms.views.page_not_found_view"

@@ -100,7 +100,6 @@ def listAllCategories(request):
     categories = IncomeCategory.objects.filter(Q(created_by=request.user) | Q(created_by__is_admin=True))[::-1]
     return render(request, 'income-category/index.html', {'categories': categories,}) 
 
-
 @login_required(login_url='signin')
 def addCategory(request):
     form = AddCateoryForm(request.POST or None)
