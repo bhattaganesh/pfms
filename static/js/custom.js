@@ -233,9 +233,8 @@ $('.fa-trash-alt').parent().click((e) => {
 
 // ################################## for databale customization and initialization
 
-$(document).ready(function () {
-  $('.datatable').find('pagination').find('a').addClass('btn btn-default');
-});
+var _target_chars = 40
+var _target_col = [2,3]
 $(function () {
   let copyButtonTrans = 'Copy'
   let csvButtonTrans = 'CSV'
@@ -248,20 +247,26 @@ $(function () {
   //   'en': 'https://cdn.datatables.net/plug-ins/1.10.19/i18n/English.json'
   // };
 
-  $.extend(true, $.fn.dataTable.Buttons.defaults.dom.button, { className: 'btn btn-default' })
+  $.extend(true, $.fn.dataTable.Buttons.defaults.dom.button, { className: 'btn btn-default btn-sm' })
   $.extend(true, $.fn.dataTable.defaults, {
     // language: {
     //   url: languages['en']
     // },
-    columnDefs: [{
-      orderable: false,
-      className: 'select-checkbox cat-id',
-      targets: 0
-    }, {
-      orderable: false,
-      searchable: false,
-      targets: -1
-    }],
+    columnDefs: [
+      {
+        orderable: false,
+        className: 'select-checkbox',
+        targets: 0
+      },
+      {
+        orderable: false,
+        targets: -1
+      },
+      {
+        targets: _target_col,
+        render: $.fn.dataTable.render.ellipsis( _target_chars, true )
+      },
+    ],
     select: {
       style: 'multi+shift',
       selector: 'td:first-child'
@@ -363,13 +368,19 @@ $(function () {
             $.ajax({
               method: 'POST',
               url: config.url,
-              data: { "ids": newids, 'csrfmiddlewaretoken': _token }
+              data: { "ids": newids, 'csrfmiddlewaretoken': _token },
+              success:function (res) { 
+                console.log(res);
+                if (res.status){
+                  bootbox.alert(`${res.msg}`, function () {
+                    window.location.reload()
+                  });
+                }else{
+                  bootbox.alert(`${res.msg}`);
+                }
+              },
             })
-              .done(function () {
-                bootbox.alert("Deleted successfully!", function () {
-                  window.location.reload()
-                });
-              })
+              // .done(function (res) {})
           }
         },
       });
@@ -379,14 +390,19 @@ $(function () {
 
   $.extend(true, $.fn.dataTable.defaults, {
     order: [[1, 'asc']],
-    pageLength: 10,
+    pageLength: 5,
   });
-  $('#dataTable:not(.ajaxTable)').DataTable({ buttons: dtButtons })
+  $('#dataTable:not(.ajaxTable)').DataTable({ 
+    buttons: dtButtons,
+    "lengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
+  })
   $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+
     $($.fn.dataTable.tables(true)).DataTable()
       .columns.adjust();
   });
 });
+
 
 
 // ######################################### my custom table 

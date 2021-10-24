@@ -161,3 +161,19 @@ table.dataTable thead .sorting_desc {
   padding-right: 5px;
   padding-top: 5px;
 }
+
+.btn-circle{
+  border-radius: 50%;
+  font-size: small;
+}
+.page-item.active .page-link {
+  box-shadow: none;
+}
+
+.page-item .page-link:focus{
+  box-shadow: none;
+}
+.page-link{
+  padding: 7px;
+  font-size: medium;
+}

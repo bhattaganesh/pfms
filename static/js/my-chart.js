@@ -41,17 +41,25 @@ var summary_url = $('#myChart').parent().find("input[type='hidden']").data('summ
 
 // } 
 
-const getChartData = (day=30*6, title = 'Last Six Months expenses') =>{
-    fetch(summary_url+"?day="+day)
-    .then((res) => res.json())
-    .then((result) => {
-        const category_data = result.category_data;
-        const [labels, data] = [Object.keys(category_data), Object.values(category_data)]
+const getChartData = (day=30*6, title = 'Last Six Months expenses',data=null,labels=null) =>{
+    if (data != null && labels !=null){
         config.data.datasets[0].data = data;
         config.data.labels = labels;
         config.data.datasets[0].label = title;
         myChart = new Chart(ctx, config);
-    })
+    }else{
+        fetch(summary_url+"?day="+day)
+        .then((res) => res.json())
+        .then((result) => {
+            console.log(result);
+            const category_data = result.category_data;
+            const [labels, data] = [Object.keys(category_data), Object.values(category_data)]
+            config.data.datasets[0].data = data;
+            config.data.labels = labels;
+            config.data.datasets[0].label = title;
+            myChart = new Chart(ctx, config);
+        });
+    }
 }
 
 document.onload = getChartData();
@@ -84,4 +92,28 @@ $('#dayChart').on('change', function() {
         myChart.destroy();
         getChartData(366,'This year\'s expenses');
     }
+});
+
+
+$('#periodicChart').on('change', function() {
+    let monthly_url = $('#periodicChart').data('monthly-url');
+    fetch(monthly_url)
+    .then((res) => res.json())
+    .then((result) => {
+        console.log(result)
+        if(this.value == "today"){
+            console.log("today");
+        }
+        if(this.value == "weekly"){
+            console.log("weekkly")
+        }
+        if(this.value == "monthly"){
+            let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'Septempber', 'October', 'November', 'December']
+            myChart.destroy();
+            getChartData(7,'Monthly Expenses', Object.values(result.data.months), months);
+        }
+        if(this.value == "yearly"){
+            console.log("yearly");
+        }
+    });
 });

@@ -87,7 +87,7 @@ def deleteIncomes(request):
         ids = list(map(deleteRecord, list(ids)))
 
         # import pdb; pdb.set_trace()
-        messages.success(request, "Income Deleted successfully.")
+        messages.success(request, "Deleted successfully.")
         return redirect(request.META.get('HTTP_REFERER'))
     messages.error(request, "Sorry, invalid request.")
     return redirect(request.META.get('HTTP_REFERER'))
@@ -131,10 +131,13 @@ def viewCategory(request, id):
 
 @login_required(login_url='signin')
 def deleteCategory(request, id):
-    category = get_object_or_404(IncomeCategory, pk=id)
     if request.method =="POST":
-        category.delete()
-        messages.success(request, "Income Category Deleted successfully.")
+        try:
+            category = IncomeCategory.objects.get(id=id)
+            category.delete()
+            messages.success(request, "Income Category Deleted successfully.")
+        except:
+            messages.error(request, "Sorry, error while deleting.")
         return redirect(request.META.get('HTTP_REFERER'))
     messages.error(request, "Sorry, invalid request.")
     return redirect(request.META.get('HTTP_REFERER'))
@@ -143,17 +146,20 @@ def deleteCategory(request, id):
 def deleteCategories(request):
     if request.method =="POST":
         ids = list(map(lambda id:int(id), request.POST['ids'].split(",")))
+        try:
+            def deleteRecord(id):
+                # import pdb; pdb.set_trace()
+                category = IncomeCategory.objects.get(id=id)
+                category.delete()
 
-        def deleteRecord(id):
-            category = get_object_or_404(IncomeCategory, pk=id)
-            category.delete()
+            ids = list(map(deleteRecord, list(ids)))
 
-        ids = list(map(deleteRecord, list(ids)))
+            return JsonResponse({'status': True, 'msg': 'Deleted Successfully.'})
 
-        messages.success(request, "Income category Deleted successfully.")
-        return redirect(request.META.get('HTTP_REFERER'))
-    messages.error(request, "Sorry, invalid request.")
-    return redirect(request.META.get('HTTP_REFERER'))
+        except:
+            return JsonResponse({'status': False, 'msg': 'Sorry!, error while deleting.'})
+
+    return JsonResponse({'status' : False, 'msg': 'Sorry!, invalid request.'})
 
 ###################################################################################  for income summary
 

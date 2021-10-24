@@ -77,6 +77,15 @@ Expense Summary
             <div class="card-tools" style="display: flex; flex-direction: columns; align-items:center">
                 <ul class="nav nav-pills ml-auto">
                     <li class="nav-item mr-2">
+                        <select class="form-control" data-monthly-url = "{% url 'monthly-expense' %}" id="periodicChart">
+                            <option  disabled selected>Select one</option>
+                            <option value="today">Today</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
+                            <option value="yearly">Yearly</option>
+                        </select>
+                    </li>
+                    <li class="nav-item mr-2">
                         <select class="form-control" id="dayChart" name="day">
                             <option  disabled selected>Select one</option>
                             <option value="0">Today</option>

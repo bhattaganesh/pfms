@@ -23,7 +23,7 @@ urlpatterns = [
     path('expense-summary-by-category/', views.expenseSummaryByCategory, name='expense-summary-by-category'),
 
 
-    path('test/', views.monthlyWiseExpense),
+    path('monthly/', views.monthlyWiseExpense, name='monthly-expense'),
 # ############################################################ Expense search
     path('search/', csrf_exempt(views.expenseSearch), name='expense-search'),
 ]

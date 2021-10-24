@@ -139,18 +139,21 @@ def deleteCategories(request):
     if request.method =="POST":
         ids = list(map(lambda id:int(id), request.POST['ids'].split(",")))
         # import pdb; pdb.set_trace()
+        try:
+            def deleteRecord(id):
+                # import pdb; pdb.set_trace()
+                category = ExpenseCategory.objects.get(id=id)
+                category.delete()
 
-        def deleteRecord(id):
-            # import pdb; pdb.set_trace()
-            category = get_object_or_404(ExpenseCategory, pk=id)
-            category.delete()
+            ids = list(map(deleteRecord, list(ids)))
 
-        ids = list(map(deleteRecord, list(ids)))
+            return JsonResponse({'status': True, 'msg': 'Deleted Successfully.'})
 
-        messages.success(request, "Expense Category Deleted successfully.")
-        return redirect(request.META.get('HTTP_REFERER'))
-    messages.error(request, "Sorry, invalid request.")
-    return redirect(request.META.get('HTTP_REFERER'))
+        except:
+            return JsonResponse({'status': False, 'msg': 'Sorry!, error while deleting.'})
+
+    return JsonResponse({'status': False, 'msg': 'Sorry!, invalid request.'})
+
 
 ###################################################################################  for expense summary
 
@@ -243,71 +246,69 @@ def expenseSummary(request):
 
 
 def monthlyWiseExpense(request):
-    today = dt.date.today()
-    six_month_ago = today - dt.timedelta(days=180)
-    expenses = Expense.objects.filter(expense_by=request.user, entry_date__gte=six_month_ago, entry_date__lte=today)
-    months = []
-    for expense in expenses:
-        print(expense)
-        # month = dt.date(2021, 2, 5).month
-        # dateformat = expense.entry_date.strftime("%Y, %m, %d")
-        month = expense.entry_date.strftime("%m")
-        months.append(month)
+    # today = dt.date.today()
+    # six_month_ago = today - dt.timedelta(days=180)
+    # expenses = Expense.objects.filter(expense_by=request.user, entry_date__gte=six_month_ago, entry_date__lte=today)
+    # months = []
+    # for expense in expenses:
+    #     print(expense)
+    #     # month = dt.date(2021, 2, 5).month
+    #     # dateformat = expense.entry_date.strftime("%Y, %m, %d")
+    #     month = expense.entry_date.strftime("%m")
+    #     months.append(month)
+    # # import pdb; pdb.set_trace()
+    # months = list(set(months))
+    # return HttpResponse(months)
+    all_expense = Expense.objects.filter(expense_by=request.user)
+    today = dt.datetime.today().date()
+    today_amount = 0
+    months_data = {}
+    week_days_data = {}
+    def get_amount_for_month(month, today_year):
+        month_amount = 0
+        for one in all_expense:
+            month_, year = one.entry_date.month, one.entry_date.year
+            if month == month_ and year == today_year:
+                month_amount += one.amount
+        return month_amount
+
+    for x in range(1, 13):
+        today_month, today_year = x, dt.datetime.today().year
+
+        for one in all_expense:
+            months_data[x] = get_amount_for_month(x, today_year)
+
     # import pdb; pdb.set_trace()
-    months = list(set(months))
-    return HttpResponse(months)
 
 
+    # def get_amount_for_day(x, today_day, month, today_year):
+    #     day_amount = 0
+    #     for one in all_expense:
+    #         day_, date_,  month_, year_ = one.entry_date.isoweekday(
+    #         ), one.entry_date.day, one.entry_date.month, one.entry_date.year
+    #         if x == day_ and month == month_ and year_ == today_year:
+    #             if not day_ > today_day:
+    #                 day_amount += one.amount
+    #     return day_amount
+
+    # for x in range(1, 8):
+    #     today_day, today_month, today_year = dt.datetime.today(
+    #     ).isoweekday(), dt.datetime.today(
+    #     ).month, dt.datetime.today().year
+    #     for one in all_expense:
+    #         week_days_data[x] = get_amount_for_day(
+    #             x, today_day, today_month, today_year)
+
+    # data = {"months": months_data, "days": week_days_data}
+    data = {"months": months_data}
+    return JsonResponse({'data': data}, safe=False)
 
 
-# def income_summary_rest(request):
-#     all_income = Expense.objects.filter(owner=request.user)
-#     today = dt.datetime.today().date()
-#     today_amount = 0
-#     months_data = {}
-#     week_days_data = {}
-
-#     def get_amount_for_month(month):
-#         month_amount = 0
-#         for one in all_income:
-#             month_, year = one.income_date.month, one.income_date.year
-#             if month == month_ and year == today_year:
-#                 month_amount += one.amount
-#         return month_amount
-
-#     for x in range(1, 13):
-#         today_month, today_year = x, dt.datetime.today().year
-#         for one in all_income:
-#             months_data[x] = get_amount_for_month(x)
-
-#     def get_amount_for_day(x, today_day, month, today_year):
-#         day_amount = 0
-#         for one in all_income:
-#             day_, date_,  month_, year_ = one.income_date.isoweekday(
-#             ), one.income_date.day, one.income_date.month, one.income_date.year
-#             if x == day_ and month == month_ and year_ == today_year:
-#                 if not day_ > today_day:
-#                     day_amount += one.amount
-#         return day_amount
-
-#     for x in range(1, 8):
-#         today_day, today_month, today_year = dt.datetime.today(
-#         ).isoweekday(), dt.datetime.today(
-#         ).month, dt.datetime.today().year
-#         for one in all_income:
-#             week_days_data[x] = get_amount_for_day(
-#                 x, today_day, today_month, today_year)
-
-#     data = {"months": months_data, "days": week_days_data}
-#     return JsonResponse({'data': data}, safe=False)
-
-
-
-# def last_3months_income_stats(request):
+# def last_3months_expense_stats(request):
 #     todays_date = dt.date.today()
 #     three_months_ago = dt.date.today() - dt.timedelta(days=90)
 #     income = Expense.objects.filter(owner=request.user,
-#                 income_date__gte=three_months_ago, income_date__lte=todays_date)
+#                 expense_date__gte=three_months_ago, expense_date__lte=todays_date)
 #     # sources occuring.
 
 #     def get_sources(item):
@@ -329,18 +330,18 @@ def monthlyWiseExpense(request):
 #     return JsonResponse({'sources_data': final}, safe=False)
 
 
-# def last_3months_income_source_stats(request):
+# def last_3months_expense_source_stats(request):
 #     todays_date = dt.date.today()
 #     last_month = dt.date.today() - dt.timedelta(days=0)
 #     last_2_month = last_month - dt.timedelta(days=30)
 #     last_3_month = last_2_month - dt.timedelta(days=30)
 
 #     last_month_income = Expense.objects.filter(owner=request.user,
-#                                               income_date__gte=last_month, income_date__lte=todays_date).order_by('income_date')
+#                                               expense_date__gte=last_month, expense_date__lte=todays_date).order_by('expense_date')
 #     prev_month_income = Expense.objects.filter(owner=request.user,
-#                                               income_date__gte=last_month, income_date__lte=last_2_month)
+#                                               expense_date__gte=last_month, expense_date__lte=last_2_month)
 #     prev_prev_month_income = Expense.objects.filter(owner=request.user,
-#                                                    income_date__gte=last_2_month, income_date__lte=last_3_month)
+#                                                    expense_date__gte=last_2_month, expense_date__lte=last_3_month)
 
 #     keyed_data = []
 #     this_month_data = {'7th': 0, '15th': 0, '22nd': 0, '29th': 0}
@@ -388,7 +389,7 @@ def monthlyWiseExpense(request):
 #             prev_prev_month_data['29th'] += x.amount
 
 #     keyed_data.append({str(last_3_month): prev_month_data})
-#     return JsonResponse({'cumulative_income_data': keyed_data}, safe=False)
+#     return JsonResponse({'cumulative_expense_data': keyed_data}, safe=False)
 
 
 

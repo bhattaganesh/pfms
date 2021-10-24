@@ -57,22 +57,22 @@ Expense Categories
             <td></td>
             <td>{{ forloop.counter }}</td>
             <td>{{ category.title }}</td>
-            <td>{{ category.description|truncatechars:50 }}</td>
-            <td>
+            <td>{{ category.description }}</td>
+            <td class="orderable-false">
               <a href="{% url 'view-category' category.id %}" title="View this Category"
-                class="mr-2 btn btn-sm btn-primary"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                class="mr-2 btn btn-xs  btn-primary btn-circle"><i class="fa fa-eye" aria-hidden="true"></i></a>
               {% if request.user.is_admin == False %}
               {% if category.created_by.is_admin == False %}
               <a href="{% url 'edit-category' category.id %}" title="Edit this Category"
-                class="mr-2 btn btn-sm btn-success"><i class="fa fa-edit" aria-hidden="true"></i></a>
-              <a href="javascript:;" title="Delete this Category" class="  btn btn-sm btn-danger delete-btn"><i
+                class="mr-2 btn btn-xs  btn-success btn-circle"><i class="fa fa-edit" aria-hidden="true"></i></a>
+              <a href="javascript:;" title="Delete this Category" class="  btn btn-xs  btn-danger delete-btn btn-circle"><i
                   class="fa fa-trash" aria-hidden="true"></i></a>
               <form action="{% url 'delete-category' category.id %}" method="post">{% csrf_token %}</form>
               {% endif %}
               {% else %}
               <a href="{% url 'edit-category' category.id %}" title="Edit this Category"
-                class="mr-2 btn btn-sm btn-success"><i class="fa fa-edit" aria-hidden="true"></i></a>
-              <a href="javascript:;" title="Delete this Category" class="  btn btn-sm btn-danger delete-btn"><i
+                class="mr-2 btn btn-xs  btn-success btn-circle"><i class="fa fa-edit" aria-hidden="true"></i></a>
+              <a href="javascript:;" title="Delete this Category" class="  btn btn-xs  btn-danger delete-btn btn-circle"><i
                   class="fa fa-trash" aria-hidden="true"></i></a>
               <form action="{% url 'delete-category' category.id %}" method="post">{% csrf_token %}</form>
               {% endif %}
