@@ -334,11 +334,11 @@ $(function () {
 const _token = document.querySelector("input[name='csrfmiddlewaretoken']").value;
 $(function () {
   let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
-  let deleteButtonTrans = 'Delete selected'
+  let deleteButtonTrans = 'Delete Selected'
   let deleteButton = {
     text: deleteButtonTrans,
     className: 'btn-danger mul-del-cat',
-    url: $('#multipleCatDelForm').data('del-url'),
+    url: $('#selectDeleteForm').data('del-url'),
     action: function (e, dt, node, config) {
       var ids = $.map(dt.rows({ selected: true }).nodes(), function (entry) {
         return $(entry).data('entry-id')
@@ -376,7 +376,10 @@ $(function () {
                     window.location.reload()
                   });
                 }else{
-                  bootbox.alert(`${res.msg}`);
+                  bootbox.alert({
+                    message: `${res.msg}`,
+                    backdrop: true
+                  });
                 }
               },
             })

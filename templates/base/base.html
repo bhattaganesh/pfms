@@ -19,6 +19,8 @@
   <link rel="stylesheet" href="{% static 'css/adminlte.min.css' %}" />
   <link rel="stylesheet" href="{% static 'plugins/select2/dist/css/select2.min.css' %}" />
   <link rel="stylesheet" href="{% static 'plugins/DataTables/datatables.min.css' %}" />
+  <link rel="stylesheet" href="{% static 'plugins/lightbox/css/lightbox.min.css' %}" />
+  <link rel="stylesheet" href="{% static 'front/plugins/aos/aos.css' %}"/>
   <link rel="stylesheet" href="{% static 'css/custom.css' %}" />
   {% block site_css %} {% endblock %}
 </head>
@@ -107,10 +109,32 @@
   <script src="{% static 'plugins/chart.js/dist/chart.min.js' %}"></script>
   <script src="{% static 'plugins/DataTables/datatables.min.js' %}"></script>
   <script src="{% static 'plugins/DataTables/ellipsis.js' %}"></script>
-
-  <!-- AdminLTE App -->
+  <script src="{% static 'plugins/lightbox/js/lightbox.min.js' %}"></script>
+  <script src="{% static 'js/dobpicker.js' %}"></script>
+  <script src="{% static 'front/plugins/aos/aos.js' %}"></script>
   <script src="{% static 'js/adminlte.min.js' %}"></script>
   <script src="{% static 'js/custom.js' %}"></script>
+  <script>
+    $(document).ready(function(){
+      $.dobPicker({
+        // Selectopr IDs
+        daySelector: '#dobday',
+        monthSelector: '#dobmonth',
+        yearSelector: '#dobyear',
+
+        // Default option values
+        dayDefault: 'Select Day',
+        monthDefault: 'Select Month',
+        yearDefault: 'Select Year',
+
+        // Minimum age
+        minimumAge: 0,
+
+        // Maximum age
+        maximumAge: 50
+      });
+    });
+  </script>
   {% block site_js %} {% endblock %}
 </body>
 

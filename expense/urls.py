@@ -21,9 +21,13 @@ urlpatterns = [
 # ############################################################ Expense summary
     path('summary/', views.expenseSummary, name='expense-summary'),
     path('expense-summary-by-category/', views.expenseSummaryByCategory, name='expense-summary-by-category'),
-
-
     path('monthly/', views.monthlyWiseExpense, name='monthly-expense'),
-# ############################################################ Expense search
-    path('search/', csrf_exempt(views.expenseSearch), name='expense-search'),
+    path('weekly/', views.weeklyWiseExpense, name='weekly-expense'),
+
+# ############################################################ for learning purpose
+    path('test/', views.indexTest.as_view(), name='expenses-test'),
+    path('search/test/', csrf_exempt(views.expenseSearch), name='expense-search'),
+    path('delete/test/', views.deleteExpensesTest, name='delete-expenses-test'),
+
+
 ]

@@ -10,9 +10,6 @@
     <li class="nav-item d-none d-sm-inline-block">
       <a href="{% url 'dashboard' %}" class="nav-link">Home</a>
     </li>
-    <li class="nav-item d-none d-sm-inline-block">
-      <a href="#" class="nav-link">Contact</a>
-    </li>
   </ul>
   <div class="navbar-search-block mx-auto" style="width: 50%">
     <form class="form-inline">
@@ -58,7 +55,7 @@
     </li>
 
     <li class="nav-item">
-      <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+      <a class="nav-link" data-widget="fullscreen" href="javascript:;" role="button">
         <i class="fas fa-expand-arrows-alt"></i>
       </a>
     </li>
@@ -72,7 +69,6 @@
         aria-haspopup="true"
         aria-expanded="false"
       >
-      <span class="fas fa-cog  mr-1"></span>
         Settings
       </a>
       <div class="dropdown-menu font-weight-bold" aria-labelledby="navbarDropdown">
@@ -83,6 +79,10 @@
         <a class="dropdown-item nav-link" href="{% url 'change_password' %}">
           <span class="fas fa-edit mr-2"></span>
           Change Password
+        </a>
+        <a class="dropdown-item nav-link" href="{% url 'delete-account' %}">
+          <span class="fas fa-user-minus mr-2 text-danger"></span>
+          Delete Account
         </a>
         <div class="dropdown-divider"></div>
         <a

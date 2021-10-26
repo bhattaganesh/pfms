@@ -25,8 +25,7 @@ urlpatterns = [
 # ############################################################ Income summary
     path('summary/', views.incomeSummary, name='income-summary'),
     path('income-summary-by-category/', views.incomeSummaryByCategory, name='income-summary-by-category'),
-
-# ############################################################ Income search
-    path('search/', csrf_exempt(views.incomeSearch), name='income-search'),
+    path('monthly/', views.monthlyWiseIncome, name='monthly-income'),
+    path('weekly/', views.weeklyWiseIncome, name='weekly-income'),
 ]
 

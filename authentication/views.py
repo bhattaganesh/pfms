@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render
 from django.views import View
 import json
-from django.http import JsonResponse, request
+from django.http import JsonResponse
 # from django.contrib.auth.models import User
 from authentication.models import User
 from django.contrib import messages
@@ -163,3 +163,24 @@ def signOut(request):
     messages.success(request, 'You have been logged out.')
     auth.logout(request)
     return redirect('signin')
+
+@login_required(login_url='signin')
+def deleteAccount(request):
+    if request.method == 'GET':
+        return render(request, 'auth/account-delete.html')
+    else:
+        context = {}
+        password = request.POST['password'].strip()
+        user = User.objects.get(email=request.user.email)
+
+
+        if password == '':
+            context.update({'error': 'Password is required.'})
+            return render(request, 'auth/account-delete.html', context)
+        if not user.check_password(password):
+            context.update({'error': 'Password does not match.'})
+            return render(request, 'auth/account-delete.html', context)
+        user.delete()
+        messages.success(request, 'Your account has been deleted successfully.')
+        return redirect('signup')
+

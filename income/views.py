@@ -8,8 +8,7 @@ from income.models import Income, IncomeCategory
 from django.core.paginator import Paginator
 from currency.models import Currency
 import datetime as dt
-import json
-
+import calendar
 # Create your views here.
 @login_required(login_url='signin')
 def index(request):
@@ -20,17 +19,9 @@ def index(request):
         messages.info(request, "Please, choose your prefered currency.")
         return redirect('currency')
 
-    paginator = Paginator(incomes, 2)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-
-    # first_page = paginator.page(1).object_list
-    # page_range = paginator.page_range
-
-    # import pdb; pdb.set_trace()
     return render(request, 'income/index.html', {
         'currency': currency,
-        'page_obj': page_obj
+        'incomes': incomes
         })
 
 
@@ -68,10 +59,13 @@ def viewIncome(request, id):
 
 @login_required(login_url='signin')
 def deleteIncome(request, id):
-    income = get_object_or_404(Income, pk=id)
     if request.method =="POST":
-        income.delete()
-        messages.success(request, "Income Deleted successfully.")
+        try:
+            income = Income.objects.get(id=id)
+            income.delete()
+            messages.success(request, "Income Deleted successfully.")
+        except:
+            messages.error(request, "Sorry, error while deleting income.")
         return redirect(request.META.get('HTTP_REFERER'))
     messages.error(request, "Sorry, invalid request.")
     return redirect(request.META.get('HTTP_REFERER'))
@@ -80,17 +74,17 @@ def deleteIncome(request, id):
 def deleteIncomes(request):
     if request.method =="POST":
         ids = list(map(lambda id:int(id), request.POST['ids'].split(",")))
+        try:
+            def deleteRecord(id):
+                income = Income.objects.get(id=id)
+                income.delete()
 
-        def deleteRecord(id):
-            # import pdb; pdb.set_trace()
-            return get_object_or_404(Income, pk=id).delete()
-        ids = list(map(deleteRecord, list(ids)))
+            ids = list(map(deleteRecord, list(ids)))
 
-        # import pdb; pdb.set_trace()
-        messages.success(request, "Deleted successfully.")
-        return redirect(request.META.get('HTTP_REFERER'))
-    messages.error(request, "Sorry, invalid request.")
-    return redirect(request.META.get('HTTP_REFERER'))
+            return JsonResponse({'status': True, 'msg': 'Deleted Successfully.'})
+        except:
+            return JsonResponse({'status': False, 'msg': 'Sorry!, error while deleting.'})
+    return JsonResponse({'status' : False, 'msg': 'Sorry!, invalid request.'})
 
 ###################################################################################  for income category
 
@@ -137,7 +131,7 @@ def deleteCategory(request, id):
             category.delete()
             messages.success(request, "Income Category Deleted successfully.")
         except:
-            messages.error(request, "Sorry, error while deleting.")
+            messages.error(request, "Sorry, error while deleting income category.")
         return redirect(request.META.get('HTTP_REFERER'))
     messages.error(request, "Sorry, invalid request.")
     return redirect(request.META.get('HTTP_REFERER'))
@@ -249,48 +243,70 @@ def incomeSummary(request):
     # import pdb; pdb.set_trace()
     return render(request, 'income/income-summary.html', context)
 
-######################################################################## income search functionality
+@login_required(login_url='signin')
+def monthlyWiseIncome(request):
+    all_incomes = Income.objects.filter(income_by=request.user)
+    if(request.GET['year']):
+        year = request.GET['year']
+    else:
+        year = dt.datetime.today().year
+    months_data = {}
+    def get_amount_for_month(month, year):
+        month_amount = 0
+        for one in all_incomes:
+            month_, year_ = one.entry_date.month, one.entry_date.year
+            if month == month_ and str(year_) == str(year):
+                month_amount += one.amount
+        return month_amount
 
-def incomeSearch(request):
-    if request.method == 'POST':
-        # import pdb; pdb.set_trace()
-        search_str = json.loads(request.body).get('searchStr')
-        incomes = Income.objects.filter(
-            Q(income_by=request.user) &
-                (
-                    Q(amount__istartswith=search_str) |
-                    Q(description__icontains=search_str) |
-                    Q(income_category__title__icontains=search_str) |
-                    Q(income_date__istartswith=search_str) |
-                    Q(entry_date__istartswith=search_str)
-                )
-        ).order_by('-id')
-
-
-        # number_of_item = 2
-        # paginatorr = Paginator(incomes, number_of_item)
-        # page_number = request.GET.get('page')
-        # page_obj = paginatorr.get_page(page_number)
-
-
-        # page_n = json.loads(request.body).get('page_n', None)
-        # page_n = 1
-                
-        # if page_n != '':
-        #     results = list(paginatorr.page(int(page_n)).object_list.values('income_category__title','amount','description','id','income_date','entry_date'))
-        #     for d in results:
-        #         d['category_title'] = d.pop('income_category__title')
-        #         d['date'] = d.pop('income_date')
-        
-        #     # import pdb; pdb.set_trace()
-        #     return JsonResponse(list(results), safe=False)
+    for x in range(1, 13):
+        for one in all_incomes:
+            months_data[x] = get_amount_for_month(x,year)
+    # import pdb; pdb.set_trace()
+    data = {"months": months_data}
+    return JsonResponse({'data': data}, safe=False)
 
 
+@login_required(login_url='signin')
+def weeklyWiseIncome(request):
+    all_incomes = Income.objects.filter(income_by=request.user)
+    if(request.GET['year'] and request.GET['month']):
+        year = request.GET['year']
+        month = request.GET['month']
 
+    _date = dt.date(int(year), int(month), 1)
+    _end_date = _date.replace(day = calendar.monthrange(_date.year, _date.month)[-1])
 
-        data = incomes.values('income_category__title','amount','description','id','income_date','entry_date')
-        for d in data:
-            d['category_title'] = d.pop('income_category__title')
-            d['date'] = d.pop('income_date')
-        # import pdb; pdb.set_trace()
-        return JsonResponse(list(data), safe=False)
+    weeks_data = {}
+
+    if _end_date.day == 29:
+        addDay = 1
+    elif _end_date.day == 30:
+        addDay = 2
+    elif _end_date.day == 31:
+        addDay = 3
+    else:
+        addDay = 0
+
+    firstWeek = _date + dt.timedelta(6)
+    secondWeek = firstWeek + dt.timedelta(7)
+    thirdWeek = secondWeek + dt.timedelta(7)
+    fourthWeek = thirdWeek + dt.timedelta(7+addDay)
+
+    def get_amount_for_week(start_date, end_date):
+        week_amount = 0
+        incomes_by_week =  all_incomes.filter(entry_date__range=[start_date, end_date])
+        for income in incomes_by_week:
+            week_amount += income.amount
+        return week_amount
+
+    weeks_data[f"{_date.day} - {firstWeek.day}"] = get_amount_for_week(_date, firstWeek)
+    weeks_data[f"{firstWeek.day} - {secondWeek.day}"] = get_amount_for_week(firstWeek ,secondWeek)
+    weeks_data[f"{secondWeek.day} - {thirdWeek.day}"] = get_amount_for_week(secondWeek ,thirdWeek)
+    weeks_data[f"{thirdWeek.day} - {fourthWeek.day}"] = get_amount_for_week(thirdWeek, fourthWeek)
+
+    
+    data = {"weeks": weeks_data, 'month': _date.strftime('%B')}
+    # import pdb; pdb.set_trace()
+
+    return JsonResponse({'data': data}, safe=False)

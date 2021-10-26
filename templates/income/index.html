@@ -20,355 +20,76 @@
 {% endblock  %}
 
 {% block content %}
- <div class="col-sm-12 col-md-12 mx-auto">
+<div class="col-sm-12 col-md-12 mx-auto">
   <div class="card card-primary">
     <div class="card-header">
-      <h3 class="card-title text-lg font-weight-bold">All Incomes</h3>
+      <h3 class="card-title">All Incomes</h3>
       <div class="card-tools">
-        {% if page_obj.paginator.count %}
-          <div class="input-group input-group-sm">
-            <form action="{% url 'expense-search' %}" onsubmit="return false;">
-              {% csrf_token %}
-              <input type="text" id="searchField" class="form-control form-control-sm" placeholder="Search Records">
-            </form>
-            <div class="input-group-append">
-              <div class="btn btn-default"><i class="fas fa-search"></i>
-              </div>
-            </div>
-          </div>
-        {% else %}
-          <a href="{% url 'add-income' %}" class="btn btn-primary btn-xs ml-3"  
-            title="Add New Expense">
-            <i class="fas fa-plus mr-1"></i> 
-            <span class="text-md">Add New Income</span>
-          </a>
-        {%endif%}
+        <a href="{% url 'add-income' %}" class="btn btn-tool btn-primary" title="Add New Income">
+          <i class="fas fa-plus mr-1"></i>
+          <span class="text-md">Add New Income</span>
+          <span data-del-url="{% url 'delete-incomes' %}" id="selectDeleteForm" class="d-block"></span>
+        </a>
       </div>
     </div>
-    <div class="card-body p-0 table-responsive records" id="mainTable">
-      <div class="p-1 controls">
-        {% if page_obj.paginator.count %}
-          <!-- Check all button -->
-          <button type="button" class="btn btn-default btn-sm checkbox-toggle"><i class="far fa-square"></i>
-          </button>
-          <div class="btn-group">
-            <button type="button" class="btn btn-default btn-sm">
-              <i class="far fa-trash-alt"></i>
-              <form action="{% url 'delete-incomes' %}" method="post">
-                {% csrf_token %}
-                <input type="hidden" name="ids" value="">
-              </form>
-            </button>
-          </div>
-          <!-- /.btn-group -->
-          <button type="button" class="btn btn-default btn-sm">
-            <i class="fas fa-sync-alt"></i>
-          </button>
+    <div class="card-body p-0 table-responsive">
+      <table class="table table-striped   text-center  table-hover datatable" id="dataTable">
+        <thead>
+          <tr>
+            <th></th>
+            <th>
+              S.N.
+          </th>
+          <th>
+              Amount ({{ currency }})
+          </th>
+          <th>
+              Category
+          </th>
+          <th>
+              Description
+          </th>
+          <th>
+              Income Date
+          </th>
+          <th>
+            Entry Date
+        </th>
+            <th>
+              &nbsp;
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for income in incomes %}
+          <tr data-entry-id = "{{ income.id }}">
+            <td></td>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ income.amount }}</td>
+            <td>{{ income.income_category }}</td>
+            <td>{{ income.description }}</td>
+            <td>{{ income.income_date |date:'Y-m-d' }}</td>
+            <td>{{ income.entry_date |date:'Y-m-d' }}</td>
+            <td>
+              <a href="{% url 'view-income' income.id %}" title="View this Income" class="mr-2 btn btn-xs btn-circle btn-primary"><i class="fa fa-eye" aria-hidden="true"></i></a>
+              <a href="{% url 'edit-income' income.id %}" title="Edit this Income" class="mr-2 btn btn-xs btn-circle btn-success"><i class="fa fa-edit" aria-hidden="true"></i></a>
+              <a href="javascript:;" title="Delete this Income" class=" btn btn-xs btn-circle btn-danger delete-btn"><i class="fa fa-trash" aria-hidden="true"></i></a>
+              <form action="{% url 'delete-income' income.id %}" method="post">{% csrf_token %}</form>
+            </td>
+          </tr>
+          {% endfor %}
 
-          <div class="btn mx-auto">
-            <a href="" class="btn btn-default btn-xs">pdf</a>
-            <a href="" class="btn btn-default btn-xs">csv</a>
-            <a href="" class="btn btn-default btn-xs">excel</a>
-            <a href="{% url 'add-income' %}" class="btn btn-default btn-xs ml-3"  title="Add New Income">
-              <i class="fas fa-plus mr-1"></i> 
-              <span class="text-md">Add New Income</span>
-            </a>
-          </div>
-        {% endif %}
-        
-        {% if page_obj.paginator.num_pages > 1 %}
-          <div class="float-right pagination">
-            <span class="mr-2">
-              Showing Page {{ page_obj.number }}  of {{ page_obj.paginator.num_pages }}
-            </span>
-            <div class="btn-group">
-              {% if page_obj.has_previous %}
-              <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-default btn-sm">
-                <i class="fas fa-chevron-left"></i>
-              </a>
-              {% else %}
-              <button type="button" class="btn btn-default btn-sm" disabled>
-                <i class="fas fa-chevron-left"></i>
-              </button>
-              {% endif %}
-                
-              {% if page_obj.has_next %}
-              <a href="?page={{ page_obj.next_page_number }}" class="btn btn-default btn-sm">
-                <i class="fas fa-chevron-right"></i>
-              </a>
-              {% else %}
-              <button type="button" class="btn btn-default btn-sm" disabled>
-                <i class="fas fa-chevron-right"></i>
-              </button>
-              {% endif %}
-            </div>
-            <!-- /.btn-group -->
-          </div>
-        {% endif %}
-        <!-- /.float-right -->
-      </div>
-      <table class="table table-striped   text-center  table-hover" >
-          <thead class="d-{% if page_obj.paginator.count <= 0  %}none {% endif %}">
-              <tr>
-                  <th>
-                  </th>
-                  <th>
-                      S.N.
-                  </th>
-                  <th>
-                      Amount ({{ currency }})
-                  </th>
-                  <th>
-                      Category
-                  </th>
-                  <th>
-                      Description
-                  </th>
-                  <th>
-                      Income Date
-                  </th>
-                  <th>
-                    Entry Date
-                </th>
-                  <th>
-                  </th>
-              </tr>
-          </thead>
-          <tbody>
-            {% if page_obj.paginator.count <= 0 %}
-              <h1 class= 'text-center'>You have no incomes.</h1>
-            {% endif %}
-              
-              {% for income in page_obj %}
-              <tr>
-                <td>
-                  <div class="icheck-primary">
-                    <input type="checkbox" name="chk_record" value="{{ income.id }}">
-                    <label for="check1"></label>
-                  </div>
-                </td>
-                <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
-                <td>{{ income.amount }}</td>
-                <td>{{ income.income_category }}</td>
-                <td>{{ income.description|truncatechars:20 }}</td>
-                <td>{{ income.income_date |date:'Y-m-d' }}</td>
-                <td>{{ income.entry_date |date:'Y-m-d' }}</td>
-                <td>
-                  <a href="{% url 'view-income' income.id %}" title="View this Income" class="mr-2 btn btn-sm btn-primary"><i class="fa fa-eye" aria-hidden="true"></i></a>
-                  <a href="{% url 'edit-income' income.id %}" title="Edit this Income" class="mr-2 btn btn-sm btn-success"><i class="fa fa-edit" aria-hidden="true"></i></a>
-                  <a href="javascript:;" title="Delete this Income" class=" btn btn-sm btn-danger delete-btn"><i class="fa fa-trash" aria-hidden="true"></i></a>
-                  <form action="{% url 'delete-income' income.id %}" method="post">{% csrf_token %}</form>
-                </td>
-              </tr>
-              {% endfor %}
-                
-          </tbody>
+        </tbody>
       </table>
-      <div class="p-1 controls">
-        {% if page_obj.paginator.count %}
-          <!-- Check all button -->
-          <button type="button" class="btn btn-default btn-sm checkbox-toggle"><i class="far fa-square"></i>
-          </button>
-          <div class="btn-group">
-            <button type="button" class="btn btn-default btn-sm">
-              <i class="far fa-trash-alt"></i>
-            </button>
-          </div>
-          <!-- /.btn-group -->
-          <button type="button" class="btn btn-default btn-sm">
-            <i class="fas fa-sync-alt" onclick="window.refresh();"></i>
-          </button>
-        {% endif %}
-        {% if page_obj.paginator.num_pages > 1 %}
-          <div class="float-right pagination">
-            <span class="mr-2">
-              Showing Page {{ page_obj.number }}  of {{ page_obj.paginator.num_pages }}
-            </span>
-            <div class="btn-group">
-              {% if page_obj.has_previous %}
-              <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-default btn-sm">
-                <i class="fas fa-chevron-left"></i>
-              </a>
-              {% else %}
-              <button type="button" class="btn btn-default btn-sm" disabled>
-                <i class="fas fa-chevron-left"></i>
-              </button>
-              {% endif %}
-                
-              {% if page_obj.has_next %}
-              <a href="?page={{ page_obj.next_page_number }}" class="btn btn-default btn-sm">
-                <i class="fas fa-chevron-right"></i>
-              </a>
-              {% else %}
-              <button type="button" class="btn btn-default btn-sm" disabled>
-                <i class="fas fa-chevron-right"></i>
-              </button>
-              {% endif %}
-            </div>
-            <!-- /.btn-group -->
-          </div>
-        {% endif %}
-        <!-- /.float-right -->
-      </div>
     </div>
-
-
-
-    <div class="card-body p-0 table-responsive records d-none" id="resultTable" data-table-name = "income">
-      <div class="p-1 controls">
-        <!-- Check all button -->
-        <button type="button" class="btn btn-default btn-sm checkbox-toggle"><i class="far fa-square"></i>
-        </button>
-        <div class="btn-group">
-          <button type="button" class="btn btn-default btn-sm" id="csrfParent">
-            {% csrf_token %}
-            <i class="far fa-trash-alt"></i>
-          </button>
-        </div>
-        <!-- /.btn-group -->
-        <button type="button" class="btn btn-default btn-sm">
-          <i class="fas fa-sync-alt" onclick="window.refresh();"></i>
-        </button>
-
-        <div class="btn mx-auto">
-          <a href="" class="btn btn-default btn-xs">pdf</a>
-          <a href="" class="btn btn-default btn-xs">csv</a>
-          <a href="" class="btn btn-default btn-xs">excel</a>
-          <a href="{% url 'add-income' %}" class="btn btn-default btn-xs ml-3"  title="Add New Income">
-            <i class="fas fa-plus mr-1"></i> 
-            <span class="text-md">Add New Income</span>
-          </a>
-        </div>
-        {% if page_obj.paginator.num_pages > 1 %}
-          <div class="float-right pagination">
-            <span class="mr-2">
-              Showing Page {{ page_obj.number }}  of {{ page_obj.paginator.num_pages }}
-            </span>
-            <div class="btn-group">
-              {% if page_obj.has_previous %}
-              <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-default btn-sm">
-                <i class="fas fa-chevron-left"></i>
-              </a>
-              {% else %}
-              <button type="button" class="btn btn-default btn-sm" disabled>
-                <i class="fas fa-chevron-left"></i>
-              </button>
-              {% endif %}
-                
-              {% if page_obj.has_next %}
-              <a href="?page={{ page_obj.next_page_number }}" class="btn btn-default btn-sm">
-                <i class="fas fa-chevron-right"></i>
-              </a>
-              {% else %}
-              <button type="button" class="btn btn-default btn-sm" disabled>
-                <i class="fas fa-chevron-right"></i>
-              </button>
-              {% endif %}
-            </div>
-            <!-- /.btn-group -->
-          </div>
-        {% endif %}
-        <!-- /.float-right -->
-      </div>
-      <table class="table table-striped   text-center  table-hover">
-          <thead>
-              <tr>
-                  <th>
-                  </th>
-                  <th>
-                      S.N.
-                  </th>
-                  <th>
-                      Amount ({{ currency }})
-                  </th>
-                  <th>
-                      Category
-                  </th>
-                  <th>
-                      Description
-                  </th>
-                  <th>
-                      Income Date
-                  </th>
-                  <th>
-                    Entry Date
-                </th>
-                  <th>
-                  </th>
-              </tr>
-          </thead>
-          <tbody></tbody>
-      </table>
-      <div class="p-1 controls">
-        <!-- Check all button -->
-        <button type="button" class="btn btn-default btn-sm checkbox-toggle"><i class="far fa-square"></i>
-        </button>
-        <div class="btn-group">
-          <button type="button" class="btn btn-default btn-sm">
-            <i class="far fa-trash-alt"></i>
-          </button>
-        </div>
-        <!-- /.btn-group -->
-        <button type="button" class="btn btn-default btn-sm">
-          <i class="fas fa-sync-alt"></i>
-        </button>
-        {% if page_obj.paginator.num_pages > 1 %}
-          <div class="float-right pagination">
-            <span class="mr-2">
-              Showing Page {{ page_obj.number }}  of {{ page_obj.paginator.num_pages }}
-            </span>
-            <div class="btn-group">
-              {% if page_obj.has_previous %}
-              <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-default btn-sm">
-                <i class="fas fa-chevron-left"></i>
-              </a>
-              {% else %}
-              <button type="button" class="btn btn-default btn-sm" disabled>
-                <i class="fas fa-chevron-left"></i>
-              </button>
-              {% endif %}
-                
-              {% if page_obj.has_next %}
-              <a href="?page={{ page_obj.next_page_number }}" class="btn btn-default btn-sm">
-                <i class="fas fa-chevron-right"></i>
-              </a>
-              {% else %}
-              <button type="button" class="btn btn-default btn-sm" disabled>
-                <i class="fas fa-chevron-right"></i>
-              </button>
-              {% endif %}
-            </div>
-            <!-- /.btn-group -->
-          </div>
-        {% endif %}
-        <!-- /.float-right -->
-      </div>
-    </div>
-
-
     <!-- /.card-body -->
   </div>
- </div>
+</div>
 {% endblock %}
 
 {% block site_js %}
 <script>
-  $(function () {
-    //Enable check and uncheck all functionality
-    $('.checkbox-toggle').click(function () {
-      var clicks = $(this).data('clicks')
-      if (clicks) {
-        //Uncheck all checkboxes
-        $('.records input[type=\'checkbox\']').prop('checked', false)
-        $('.checkbox-toggle .far.fa-check-square').removeClass('fa-check-square').addClass('fa-square')
-      } else {
-        //Check all checkboxes
-        $('.records input[type=\'checkbox\']').prop('checked', true)
-        $('.checkbox-toggle .far.fa-square').removeClass('fa-square').addClass('fa-check-square')
-      }
-      $(this).data('clicks', !clicks)
-    })
-  })
+  var _target_chars = 10
+  var _target_col = [2,4]
 </script>
-  
 {% endblock site_js %}

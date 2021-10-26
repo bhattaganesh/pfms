@@ -10,7 +10,8 @@ from expense.models import Expense, ExpenseCategory
 from currency.models import Currency
 import json
 from django.core.paginator import Paginator
-
+from django.views import View
+import calendar
 
 # Create your views here.
 @login_required(login_url='signin')
@@ -22,13 +23,9 @@ def index(request):
         messages.info(request, "Please, choose your prefered currency.")
         return redirect('currency')
 
-    paginator = Paginator(expenses, 10)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-
     return render(request, 'expense/index.html', {
         'currency': currency,
-        'page_obj': page_obj
+        'expenses': expenses
         })
 
 @login_required(login_url='signin')
@@ -74,17 +71,17 @@ def deleteExpense(request, id):
 def deleteExpenses(request):
     if request.method =="POST":
         ids = list(map(lambda id:int(id), request.POST['ids'].split(",")))
+        try:
+            def deleteRecord(id):
+                expense = Expense.objects.get(id=id)
+                expense.delete()
 
-        def deleteRecord(id):
-            # import pdb; pdb.set_trace()
-            return get_object_or_404(Expense, pk=id).delete()
-        ids = list(map(deleteRecord, list(ids)))
+            ids = list(map(deleteRecord, list(ids)))
 
-        # import pdb; pdb.set_trace()
-        messages.success(request, "Expense Deleted successfully.")
-        return redirect(request.META.get('HTTP_REFERER'))
-    messages.error(request, "Sorry, invalid request.")
-    return redirect(request.META.get('HTTP_REFERER'))
+            return JsonResponse({'status': True, 'msg': 'Deleted Successfully.'})
+        except:
+            return JsonResponse({'status': False, 'msg': 'Sorry!, error while deleting.'})
+    return JsonResponse({'status' : False, 'msg': 'Sorry!, invalid request.'})
 
 
 ###################################################################################  for expense category
@@ -186,6 +183,8 @@ def expenseSummaryByCategory(request):
     # import pdb; pdb.set_trace()
     return JsonResponse({'category_data': finalrep}, safe=False)
 
+
+@login_required(login_url='signin')
 def expenseSummary(request):
     if not Currency.objects.filter(user=request.user).exists():
         messages.info(request, "Please, choose your prefered currency.")
@@ -244,156 +243,118 @@ def expenseSummary(request):
     return render(request, 'expense/expense-summary.html', context)
 
 
-
+@login_required(login_url='signin')
 def monthlyWiseExpense(request):
-    # today = dt.date.today()
-    # six_month_ago = today - dt.timedelta(days=180)
-    # expenses = Expense.objects.filter(expense_by=request.user, entry_date__gte=six_month_ago, entry_date__lte=today)
-    # months = []
-    # for expense in expenses:
-    #     print(expense)
-    #     # month = dt.date(2021, 2, 5).month
-    #     # dateformat = expense.entry_date.strftime("%Y, %m, %d")
-    #     month = expense.entry_date.strftime("%m")
-    #     months.append(month)
-    # # import pdb; pdb.set_trace()
-    # months = list(set(months))
-    # return HttpResponse(months)
-    all_expense = Expense.objects.filter(expense_by=request.user)
-    today = dt.datetime.today().date()
-    today_amount = 0
+    all_expenses = Expense.objects.filter(expense_by=request.user)
+    if(request.GET['year']):
+        year = request.GET['year']
+    else:
+        year = dt.datetime.today().year
     months_data = {}
-    week_days_data = {}
-    def get_amount_for_month(month, today_year):
+    def get_amount_for_month(month, year):
         month_amount = 0
-        for one in all_expense:
-            month_, year = one.entry_date.month, one.entry_date.year
-            if month == month_ and year == today_year:
+        for one in all_expenses:
+            month_, year_ = one.entry_date.month, one.entry_date.year
+            if month == month_ and str(year_) == str(year):
                 month_amount += one.amount
         return month_amount
 
     for x in range(1, 13):
-        today_month, today_year = x, dt.datetime.today().year
-
-        for one in all_expense:
-            months_data[x] = get_amount_for_month(x, today_year)
-
+        for one in all_expenses:
+            months_data[x] = get_amount_for_month(x,year)
     # import pdb; pdb.set_trace()
-
-
-    # def get_amount_for_day(x, today_day, month, today_year):
-    #     day_amount = 0
-    #     for one in all_expense:
-    #         day_, date_,  month_, year_ = one.entry_date.isoweekday(
-    #         ), one.entry_date.day, one.entry_date.month, one.entry_date.year
-    #         if x == day_ and month == month_ and year_ == today_year:
-    #             if not day_ > today_day:
-    #                 day_amount += one.amount
-    #     return day_amount
-
-    # for x in range(1, 8):
-    #     today_day, today_month, today_year = dt.datetime.today(
-    #     ).isoweekday(), dt.datetime.today(
-    #     ).month, dt.datetime.today().year
-    #     for one in all_expense:
-    #         week_days_data[x] = get_amount_for_day(
-    #             x, today_day, today_month, today_year)
-
-    # data = {"months": months_data, "days": week_days_data}
     data = {"months": months_data}
     return JsonResponse({'data': data}, safe=False)
 
 
-# def last_3months_expense_stats(request):
-#     todays_date = dt.date.today()
-#     three_months_ago = dt.date.today() - dt.timedelta(days=90)
-#     income = Expense.objects.filter(owner=request.user,
-#                 expense_date__gte=three_months_ago, expense_date__lte=todays_date)
-#     # sources occuring.
+@login_required(login_url='signin')
+def weeklyWiseExpense(request):
+    all_expenses = Expense.objects.filter(expense_by=request.user)
+    if(request.GET['year'] and request.GET['month']):
+        year = request.GET['year']
+        month = request.GET['month']
 
-#     def get_sources(item):
-#         return item.source
-#     final = {}
-#     sources = list(set(map(get_sources, income)))
+    _date = dt.date(int(year), int(month), 1)
+    _end_date = _date.replace(day = calendar.monthrange(_date.year, _date.month)[-1])
 
-#     def get_sources_count(y):
-#         new = Expense.objects.filter(source=y)
-#         count = new.count()
-#         amount = 0
-#         for y in new:
-#             amount += y.amount
-#         return {'count': count, 'amount': amount}
+    weeks_data = {}
 
-#     for x in income:
-#         for y in sources:
-#             final[y] = get_sources_count(y)
-#     return JsonResponse({'sources_data': final}, safe=False)
+    if _end_date.day == 29:
+        addDay = 1
+    elif _end_date.day == 30:
+        addDay = 2
+    elif _end_date.day == 31:
+        addDay = 3
+    else:
+        addDay = 0
 
+    firstWeek = _date + dt.timedelta(6)
+    secondWeek = firstWeek + dt.timedelta(7)
+    thirdWeek = secondWeek + dt.timedelta(7)
+    fourthWeek = thirdWeek + dt.timedelta(7+addDay)
 
-# def last_3months_expense_source_stats(request):
-#     todays_date = dt.date.today()
-#     last_month = dt.date.today() - dt.timedelta(days=0)
-#     last_2_month = last_month - dt.timedelta(days=30)
-#     last_3_month = last_2_month - dt.timedelta(days=30)
+    def get_amount_for_week(start_date, end_date):
+        week_amount = 0
+        expenses_by_week =  all_expenses.filter(entry_date__range=[start_date, end_date])
+        for expense in expenses_by_week:
+            week_amount += expense.amount
+        return week_amount
 
-#     last_month_income = Expense.objects.filter(owner=request.user,
-#                                               expense_date__gte=last_month, expense_date__lte=todays_date).order_by('expense_date')
-#     prev_month_income = Expense.objects.filter(owner=request.user,
-#                                               expense_date__gte=last_month, expense_date__lte=last_2_month)
-#     prev_prev_month_income = Expense.objects.filter(owner=request.user,
-#                                                    expense_date__gte=last_2_month, expense_date__lte=last_3_month)
+    weeks_data[f"{_date.day} - {firstWeek.day}"] = get_amount_for_week(_date, firstWeek)
+    weeks_data[f"{firstWeek.day} - {secondWeek.day}"] = get_amount_for_week(firstWeek ,secondWeek)
+    weeks_data[f"{secondWeek.day} - {thirdWeek.day}"] = get_amount_for_week(secondWeek ,thirdWeek)
+    weeks_data[f"{thirdWeek.day} - {fourthWeek.day}"] = get_amount_for_week(thirdWeek, fourthWeek)
 
-#     keyed_data = []
-#     this_month_data = {'7th': 0, '15th': 0, '22nd': 0, '29th': 0}
-#     prev_month_data = {'7th': 0, '15th': 0, '22nd': 0, '29th': 0}
-#     prev_prev_month_data = {'7th': 0, '15th': 0, '22nd': 0, '29th': 0}
+    
+    data = {"weeks": weeks_data, 'month': _date.strftime('%B')}
+    # import pdb; pdb.set_trace()
 
-#     for x in last_month_income:
-#         month = str(x.date)[:7]
-#         date_in_month = str(x.date)[:2]
-#         if int(date_in_month) <= 7:
-#             this_month_data['7th'] += x.amount
-#         if int(date_in_month) > 7 and int(date_in_month) <= 15:
-#             this_month_data['15th'] += x.amount
-#         if int(date_in_month) >= 16 and int(date_in_month) <= 21:
-#             this_month_data['22nd'] += x.amount
-#         if int(date_in_month) > 22 and int(date_in_month) < 31:
-#             this_month_data['29th'] += x.amount
-
-#     keyed_data.append({str(last_month): this_month_data})
-
-#     for x in prev_month_income:
-#         date_in_month = str(x.date)[:2]
-#         month = str(x.date)[:7]
-#         if int(date_in_month) <= 7:
-#             prev_month_data['7th'] += x.amount
-#         if int(date_in_month) > 7 and int(date_in_month) <= 15:
-#             prev_month_data['15th'] += x.amount
-#         if int(date_in_month) >= 16 and int(date_in_month) <= 21:
-#             prev_month_data['22nd'] += x.amount
-#         if int(date_in_month) > 22 and int(date_in_month) < 31:
-#             prev_month_data['29th'] += x.amount
-
-#     keyed_data.append({str(last_2_month): prev_month_data})
-
-#     for x in prev_prev_month_income:
-#         date_in_month = str(x.date)[:2]
-#         month = str(x.date)[:7]
-#         if int(date_in_month) <= 7:
-#             prev_prev_month_data['7th'] += x.amount
-#         if int(date_in_month) > 7 and int(date_in_month) <= 15:
-#             prev_prev_month_data['15th'] += x.amount
-#         if int(date_in_month) >= 16 and int(date_in_month) <= 21:
-#             prev_prev_month_data['22nd'] += x.amount
-#         if int(date_in_month) > 22 and int(date_in_month) < 31:
-#             prev_prev_month_data['29th'] += x.amount
-
-#     keyed_data.append({str(last_3_month): prev_month_data})
-#     return JsonResponse({'cumulative_expense_data': keyed_data}, safe=False)
+    return JsonResponse({'data': data}, safe=False)
 
 
 
-######################################################################## expense search functionality
+######################################################################## only for learning purpose (test)
+class indexTest(View):
+    def get(self, request):
+        expenses = Expense.objects.filter(expense_by=request.user).order_by('-id')
+        if Currency.objects.filter(user=request.user).exists():
+            currency = Currency.objects.get(user=request.user).currency.split(" - ")[0]
+        else:
+            messages.info(request, "Please, choose your prefered currency.")
+            return redirect('currency')
+
+        paginator = Paginator(expenses, 10)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        # first_page = paginator.page(1).object_list
+        # page_range = paginator.page_range
+
+        # import pdb; pdb.set_trace()
+
+        return render(request, 'expense/index-test.html', {
+            'currency': currency,
+            'page_obj': page_obj
+    })
+
+
+@login_required(login_url='signin')
+def deleteExpensesTest(request):
+    if request.method =="POST":
+        ids = list(map(lambda id:int(id), request.POST['ids'].split(",")))
+
+        def deleteRecord(id):
+            # import pdb; pdb.set_trace()
+            return get_object_or_404(Expense, pk=id).delete()
+        ids = list(map(deleteRecord, list(ids)))
+
+        # import pdb; pdb.set_trace()
+        messages.success(request, "Expense Deleted successfully.")
+        return redirect(request.META.get('HTTP_REFERER'))
+    messages.error(request, "Sorry, invalid request.")
+    return redirect(request.META.get('HTTP_REFERER'))
+
+
 
 def expenseSearch(request):
     if request.method == 'POST':

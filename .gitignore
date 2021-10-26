@@ -1,0 +1,10 @@
+__pycache__/
+*.manifest
+.cache
+*.log
+local_settings.py
+db.sqlite3
+.python-version
+.env
+env/
+.vscode/settings.json

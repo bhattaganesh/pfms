@@ -66,7 +66,6 @@ Income Summary
     </div>
 </div>
 
-
 <div class="col-12 mx-auto">
     <div class="card card-primary">
         <div class="card-header">
@@ -76,14 +75,8 @@ Income Summary
             </h3>
             <div class="card-tools" style="display: flex; flex-direction: columns; align-items:center">
                 <ul class="nav nav-pills ml-auto">
-                    <li class="nav-item mr-2">
-                        <select class="form-control" id="dayChart" name="day">
-                            <option  disabled selected>Select one</option>
-                            <option value="0">Today</option>
-                            <option value="7">This Week</option>
-                            <option value="30">This Month</option>
-                            <option value="366">Year</option>
-                        </select>
+                    <li class="nav-item">
+                        <a class="nav-link"  href="javascript:;">Chart Type:</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link chart-type active" data-chart-type="bar" href="javascript:;"
@@ -101,31 +94,64 @@ Income Summary
                         <a class="nav-link chart-type" data-chart-type="pie" href="javascript:;"
                             data-toggle="tab">Pie</a>
                     </li>
+                    <!-- <li class="nav-item">
+                        <a class="nav-link chart-type" data-chart-type="radar" href="javascript:;"
+                            data-toggle="tab">Radar</a>
+                    </li> -->
                 </ul>
             </div>
         </div>
     </div>
-    <div class="card-body">
-        <div class="chart col-sm-12 col-lg-8 mx-auto">
-            <input type="hidden" data-summary-url = "{% url 'income-summary-by-category' %}">
-            <canvas id="myChart" class="bg-light p-3" style="max-height: 400px; max-width: 100%;"></canvas>
-
-
-            <div class="chartjs-size-monitor">
-                <div class="chartjs-size-monitor-expand">
-                    <div class=""></div>
+    <div class="card-body row">
+        <div class="chart col-sm-12 col-lg-6 ">
+            <div class="card-header bg-secondary mb-4">
+                <h3 class="card-title mb-3">
+                    <i class="fas fa-chart-pie"></i>
+                    Income Summary Based on Category
+                </h3>
+                <div class="card-tools" style="display: flex; flex-direction: columns; align-items:center">
+                    <ul class="nav nav-pills ml-auto">
+                        <li class="nav-item mr-2">
+                            <select class="form-control" id="dayChart" name="day">
+                                <option value="0">Today</option>
+                                <option value="7">This Week</option>
+                                <option value="30">This Month</option>
+                                <option value="180">This Six Month</option>
+                                <option value="366">This Year</option>
+                            </select>
+                        </li>
+                    </ul>
                 </div>
-                <div class="chartjs-size-monitor-shrink">
-                    <div class=""></div>
-                </div>
-                <canvas id="donutChart"
-                    style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%; display: block; width: 537px;"
-                    width="537" height="250" class="chartjs-render-monitor"></canvas>
             </div>
+            <div class="card-header bg-success">
+                <h3 class="card-title mb-3">
+                    <i class="fas fa-chart-pie mr-1"></i>
+                    Income Summary for
+                </h3>
+                <div class="card-tools" style="display: flex; flex-direction: columns; align-items:center">
+                    <ul class="nav nav-pills ml-auto">
+                        <li class="nav-item mr-2">
+                            <div class="form form-inline">
+                                <label for="" class="mr-1">Year:</label>
+                                <select id="dobyear" data-monthly-url = "{% url 'monthly-income' %}" class="form-control-sm"></select>
+                            </div>
+                        </li>
+                        <li class="nav-item mr-2">
+                            <div class="form form-inline">
+                                <label for="" class="mr-1">Month:</label>
+                                <select id="dobmonth" data-weekly-url = "{% url 'weekly-income' %}" class="form-control-sm"></select>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="chart col-sm-12 col-lg-6">
+            <input type="hidden" data-summary-url = "{% url 'income-summary-by-category' %}">
+            <canvas id="myChart" class="bg-light" style="max-height: auto; max-width: 100%;"></canvas>
         </div>
     </div>
     <!-- /.card-body -->
-</div>
 </div>
 {% endblock %}
 
