@@ -1,10 +1,7 @@
-__pycache__/
-*.manifest
-.cache
 *.log
+*.pot
+*.pyc
+__pycache__/
 local_settings.py
 db.sqlite3
-.python-version
-.env
-env/
-.vscode/settings.json
+venv/
