@@ -29,7 +29,7 @@ SECRET_KEY =  os.environ.get('SECRET_KEY'),
 DEBUG = False
 
 ALLOWED_HOSTS = ['*']
-ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', 'new-pfms.herokuapp.com']
+# ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', 'new-pfms.herokuapp.com']
 
 
 # Application definition
@@ -148,7 +148,8 @@ USE_TZ = True
 # STATIC_URL = "/static/"
 # STATICFILES_DIRS = [os.path.join(BASE_DIR,'static')]
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = BASE_DIR / 'static'
 STATIC_URL = "/static/"
 django_heroku.settings(locals())
 
