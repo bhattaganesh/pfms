@@ -19,7 +19,7 @@ class Expense(models.Model):
     amount = models.FloatField()
     description = models.TextField(blank=True, null=True)
     expense_by = models.ForeignKey(User, on_delete=models.CASCADE)
-    expense_category = models.ForeignKey(ExpenseCategory,default=44, on_delete=SET_DEFAULT)
+    expense_category = models.ForeignKey(ExpenseCategory,default=1, on_delete=SET_DEFAULT)
 
     # expense_category = models.ForeignKey(ExpenseCategory, on_delete=models.SET_NULL, null=True)
     expense_date = models.DateField()
