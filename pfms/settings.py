@@ -23,13 +23,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = 'django-insecure-kq$tce^l&-6_5_ifua@1+m2y7rvf72-4s^9(i&ywv*exg^5ht2'
 SECRET_KEY =  os.environ.get('SECRET_KEY'),
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
-# ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', 'new-pfms.herokuapp.com']
+# ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', 'new-pfms.herokuapp.com']
 
 
 # Application definition
@@ -85,26 +84,13 @@ WSGI_APPLICATION = 'pfms.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.postgresql',
-    #     # 'NAME': os.environ.get('DB_NAME'),
-    #     # 'USER': os.environ.get('DB_USER'),
-    #     # 'PASSWORD': os.environ.get('DB_USER_PASSWORD'),
-    #     # 'HOST': os.environ.get('DB_HOST')
-    #     'NAME': 'pfms',
-    #     'USER': 'postgres',
-    #     'PASSWORD': '40028008',
-    #     'HOST': 'localhost'
-
-    # }
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'datmckffn43ijt',
-        'USER': 'kexcvvmplubdsu',
-        'PASSWORD': '04ae54f9495f5ce7a9adf340e21efe9180ac51234771207bfeed92caf19142bc',
-        'HOST': 'ec2-35-171-90-188.compute-1.amazonaws.com',
+        'NAME': os.environ['DB_NAME'],
+        'USER': os.environ['DB_USER'],
+        'PASSWORD': os.environ['DB_USER_PASSWORD'],
+        'HOST': os.environ['DB_HOST'],
         'POST': 5432
-
     }
 }
 
@@ -145,11 +131,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-# STATIC_URL = "/static/"
-# STATICFILES_DIRS = [os.path.join(BASE_DIR,'static')]
-
-# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-# STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 
@@ -157,7 +138,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
-# django_heroku.settings(locals())
+django_heroku.settings(locals())
 
 
 MEDIA_ROOT = BASE_DIR / 'uploads'
@@ -169,8 +150,6 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
 EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
-# EMAIL_HOST_USER = "bhattaganesh5266@gmail.com"
-# EMAIL_HOST_PASSWORD = "#$Gg17683672"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -178,7 +157,7 @@ EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'authentication.User'
-# LOGIN_REDIRECT_URL = '/'
+
 MESSAGE_TAGS={
     messages.ERROR: 'danger'
 }

@@ -3,11 +3,24 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="author" content="Kodinger" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="author" content="Ganesh Bhatta" />
+  <meta name="keywords"
+    content="pfms, personal finance, expense tracker, daily expense tracker, expense manager, online expense manager,
+    personal finance management system in django python, expense manager in django, expense tracker,
+    personal finance manager in heroku, heroku finance manager, expense tracker by Ganesh Bhatta" />
+  <meta name="description" content="Personal Finance Management System." />
+  <link href="{% static 'front/img/logo.png' %}" type="image/x-icon" rel="icon" />
+  <link href="{% static 'front/img/logo.png' %}" type="image/x-icon" rel="shortcut icon" />
+  <meta property="og:title" content="Personal Finance Management System." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://new-pfms.herokuapp.com" />
+  <meta property="og:image" content="/static/img/end-icon200.png" />
+  <meta property="og:site_name" content="Personal Finance Manager" />
+  <meta property="og:description"
+    content="Easy-to-use online Personal Finance Management System. You can easily manage incomes and expenses online." />
   <title>{% block title %} {% endblock %} | PFMS</title>
-  <link rel="shortcut icon" type="image/jpg" href="{% static 'front/img/logo.png' %}" />
   <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}" />
   <link rel="stylesheet" href="{% static 'front/plugins/bootstrap/dist/css/bootstrap.min.css' %}"/>
   <link rel="stylesheet" href="{% static 'front/plugins/aos/aos.css' %}"/>
@@ -62,7 +75,7 @@
               </div>
               {% block content %} {% endblock %}
             </div>
-            <span class="footer-text text-center small mt-2 pb-1"> Copyright &copy; 2021 &mdash;  PFMS </span>
+            <span class="footer-text text-center small mt-2 pb-1"> Copyright &copy; {% now "Y" %} &mdash;  PFMS </span>
           </div>
         </div>
       </div>
