@@ -1,0 +1,44 @@
+#header {
+  height: 50px;
+  background: rgb(0, 62, 69);
+  color: white;
+}
+
+#branding h1 {
+  color: white;
+}
+
+a:link{
+  color: #fff;
+}
+a {
+  color: rgb(16, 79, 173);
+}
+
+div.breadcrumbs {
+  background: rgb(0, 66, 73);
+}
+
+
+.module h2,
+.module caption,
+.inline-group h2 {
+  background: rgb(0, 66, 73);
+}
+
+.button,
+input[type="submit"],
+input[type="button"],
+.submit-row input,
+a.button {
+  background: rgb(0, 62, 69);
+}
+
+.submit-row input[type="submit"]{
+  display: block;
+  width: 100%;
+}
+
+.submit-row input[type="submit"]:hover{
+  background-color: rgb(1, 46, 51);
+}

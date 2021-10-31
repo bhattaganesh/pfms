@@ -1,0 +1,14 @@
+{% extends "admin/base.html" %}
+{% load static %}
+{% block branding %}
+
+    <h1 id="head" style="font-family: Georgia, 'Times New Roman', Times, serif;">
+        <img src="{% static 'img/logo.png' %}" alt="PFMS" width="30">    
+        PFMS
+    </h1>
+
+{% endblock branding %}
+
+{% block extrastyle %}
+  <link rel="stylesheet" href="{% static 'css/admin.css' %}">
+{% endblock extrastyle %}
